@@ -28,7 +28,7 @@ public class EventsController {
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public @ResponseBody Iterable<Event> newEvent(){
-        eventsService.newEvent();
+        eventsService.addEvent();
         Iterable<Event> list = eventsService.getAll();
         return list;
     }

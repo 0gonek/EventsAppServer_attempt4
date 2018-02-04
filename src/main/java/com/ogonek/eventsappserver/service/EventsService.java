@@ -23,7 +23,7 @@ public class EventsService {
         return list;
     }
 
-    public void newEvent(){
+    public void addEvent(){
         eventsRep.save(new Event("test"));
     }
 
