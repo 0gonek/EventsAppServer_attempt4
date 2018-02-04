@@ -62,7 +62,7 @@ public class User implements Serializable{
         int freePos = 0;
         int currentPos = 0;
         while (currentPos < array.length){
-            if(freePos < array.length && array[freePos] != null) freePos++;
+            while (freePos < array.length && array[freePos] != null) freePos++;
             currentPos = freePos+1;
             while (currentPos < array.length && array[currentPos] == null) currentPos++;
             if(currentPos < array.length){
