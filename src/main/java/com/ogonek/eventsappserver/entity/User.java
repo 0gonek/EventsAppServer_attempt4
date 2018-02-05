@@ -42,13 +42,31 @@ public class User implements Serializable{
         return this.password == password;
     }
 
-    public boolean addEvent(Long eventId){
+    public boolean changePassword(String oldPassword, String newPassword){
+        if(verifyPassword(oldPassword)) {
+            password = newPassword;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean changeName(String password, String name){
+        if(verifyPassword(password)) {
+            this.name = name;
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public boolean addEvent(long eventId){
         if(eventsIdLast < EVENTSCOUNT-1){
             eventsIdLast++;
             eventsId[eventsIdLast] = eventId;
         }
         else{
-            int firstEmptyElement = heapyfyArray(eventsId);
+            int firstEmptyElement = heapifyArray(eventsId);
             if(firstEmptyElement < EVENTSCOUNT){
                 eventsIdLast = firstEmptyElement;
                 eventsId[eventsIdLast] = eventId;
@@ -58,7 +76,43 @@ public class User implements Serializable{
         return true;
     }
 
-    public int heapyfyArray(Long[] array){
+    public boolean deleteEvent(int eventId){
+        for (int i = 0; i <= eventsIdLast; i++) {
+            if (eventsId[i] == eventId) {
+                eventsId[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean addOwnEvent(long ownEventId){
+        if(ownEventsIdLast < EVENTSCOUNT - 1){
+            ownEventsIdLast++;
+            ownEventsId[ownEventsIdLast] = ownEventId;
+        }
+        else{
+            int firstEmptyElement = heapifyArray(ownEventsId);
+            if(firstEmptyElement < EVENTSCOUNT){
+                ownEventsIdLast = firstEmptyElement;
+                ownEventsId[ownEventsIdLast] = ownEventId;
+            }
+            else return false;
+        }
+        return true;
+    }
+
+    public boolean deleteOwnEvwnt(long ownEventId){
+        for (int i = 0; i <= ownEventsIdLast; i++) {
+            if(ownEventsId[i] == ownEventId){
+                ownEventsId[i] = null;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static int heapifyArray(Long[] array){
         int freePos = 0;
         int currentPos = 0;
         while (currentPos < array.length){
