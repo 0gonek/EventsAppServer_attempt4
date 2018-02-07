@@ -9,10 +9,13 @@ public class Event implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long id;
+    private Long id;
 
     @Column(name = "name")
     public String name;
+
+    //@Column(name = "ownerId")
+    //private Long ownerId;
 
     @Override
     public String toString(){
@@ -24,5 +27,9 @@ public class Event implements Serializable{
 
     public Event(String name){
         this.name = name;
+    }
+
+    public static boolean deleteEvent(Long id){
+        return false;
     }
 }

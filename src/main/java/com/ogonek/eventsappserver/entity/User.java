@@ -19,19 +19,19 @@ public class User implements Serializable{
     private String login;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "events")
+    @Column(name = "eventsId")
     private Long[] eventsId;
     private int eventsIdLast;
     @Column(name = "ownEventsId")
     private Long[] ownEventsId;
     private int ownEventsIdLast;
 
-    //public User(){}
+    public User(){}
 
-    public User(String login, String password){
+    public User(String name, String login, String password){
         this.password = password;
         this.login = login;
-        this.name = login;
+        this.name = name;
         eventsId = new Long[EVENTSCOUNT];
         ownEventsId = new Long[EVENTSCOUNT];
         eventsIdLast = -1;
@@ -40,6 +40,11 @@ public class User implements Serializable{
 
     public boolean verifyPassword(String password){
         return this.password == password;
+    }
+
+    public boolean renameUser(String newName){
+        this.name = newName;
+        return true;
     }
 
     public boolean changePassword(String oldPassword, String newPassword){
@@ -76,14 +81,13 @@ public class User implements Serializable{
         return true;
     }
 
-    public boolean deleteEvent(int eventId){
-        for (int i = 0; i <= eventsIdLast; i++) {
-            if (eventsId[i] == eventId) {
-                eventsId[i] = null;
-                return true;
-            }
+    public boolean deleteEventFromList(long eventId){
+        Integer number = getNumberById(eventId, eventsId);
+        if(number != null){
+            eventsId[number] = null;
+            return true;
         }
-        return false;
+        else return false;
     }
 
     public boolean addOwnEvent(long ownEventId){
@@ -102,14 +106,22 @@ public class User implements Serializable{
         return true;
     }
 
-    public boolean deleteOwnEvwnt(long ownEventId){
-        for (int i = 0; i <= ownEventsIdLast; i++) {
-            if(ownEventsId[i] == ownEventId){
-                ownEventsId[i] = null;
-                return true;
-            }
+    public boolean deleteOwnEvent(long ownEventId){
+        Integer number = getNumberById(ownEventId, ownEventsId);
+        if(number != null){
+            ownEventsId[number] = null;
+            Event.deleteEvent(ownEventId);
+            return true;
         }
-        return false;
+        else return false;
+    }
+
+    private static Integer getNumberById(Long id, Long[] array){
+        for (int i = 0; i < array.length; i++) {
+            if(array[i] == id)
+                return i;
+        }
+        return null;
     }
 
     private static int heapifyArray(Long[] array){

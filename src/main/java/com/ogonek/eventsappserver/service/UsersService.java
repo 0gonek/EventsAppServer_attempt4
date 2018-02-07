@@ -16,7 +16,11 @@ public class UsersService {
         return iterable;
     }
 
-    public void addEvent(){
-        usersRep.save(new User("testLogin", "testPass"));
+    public void renameUser(Long id, String name){
+        usersRep.findById(id).renameUser(name);
+    }
+
+    public void addUser(){
+        usersRep.save(new User("name","test", "password"));
     }
 }
