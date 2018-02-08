@@ -18,10 +18,10 @@ public class EventsService {
         return iterable;
     }
 
-    public List<Event> getByName(String name){
-        List<Event> list = eventsRep.findByName(name);
-        return list;
-    }
+//    public List<Event> getByName(String name){
+//        List<Event> list = eventsRep.findByName(name);
+//        return list;
+//    }
 
     public void addEvent(){
         eventsRep.save(new Event("test"));

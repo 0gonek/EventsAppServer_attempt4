@@ -21,10 +21,10 @@ public class EventsController {
         return list;
     }
 
-    @RequestMapping(value = "/name/{name}", method = RequestMethod.GET)
-    public List<Event> getByName(@PathVariable String name){
-        return eventsService.getByName(name);
-    }
+//    @RequestMapping(value = "/name/{name}", method = RequestMethod.GET)
+//    public List<Event> getByName(@PathVariable String name){
+//        return eventsService.getByName(name);
+//    }
 
     @RequestMapping(value = "/new", method = RequestMethod.GET)
     public @ResponseBody Iterable<Event> newEvent(){
