@@ -11,11 +11,19 @@ public class Event implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name")
-    public String name;
+    @Column(name = "name", nullable = false)
+    private String name;
+    @Column(name = "ownerId", nullable = false)
+    private String ownerId;
+    @Column(name = "latitude", nullable = false)
+    private Double latitude;
+    @Column(name = "longitude", nullable = false)
+    private Double longitude;
+    @Column(name = "description", nullable = true)
+    private String description;
+    @Column(name = "pathToThePicture", nullable = true)
+    private String pathToThePicture;
 
-    //@Column(name = "ownerId")
-    //private Long ownerId;
 
     @Override
     public String toString(){

@@ -37,8 +37,9 @@ public class UsersService {
         return user.getId();
     }
 
-    public void deleteUser(Long userId){
+    public boolean deleteUser(Long userId){
         usersRep.deleteById(userId);
+        return true;
     }
 
     public boolean verifyToken(Long userId, String token){
@@ -69,7 +70,7 @@ public class UsersService {
         return usersRep.findById(id).getName();
     }
 
-    public User findByIntegration(String integrationId, String integrationType){
-        return usersRep.findByIntegrationIdAndIntegrationType(integrationId, integrationType);
+    public long findByIntegration(String integrationId, String integrationType){
+        return usersRep.findByIntegrationIdAndIntegrationType(integrationId, integrationType).getId();
     }
 }
