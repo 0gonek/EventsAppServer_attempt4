@@ -24,7 +24,7 @@ public class EventsService {
 //    }
 
     public void addEvent(){
-        eventsRep.save(new Event("test"));
+        eventsRep.save(new Event());
     }
 
 }

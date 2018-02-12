@@ -1,5 +1,7 @@
 package com.ogonek.eventsappserver.entity;
 
+import sun.util.calendar.BaseCalendar;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -19,25 +21,55 @@ public class Event implements Serializable{
     private Double latitude;
     @Column(name = "longitude", nullable = false)
     private Double longitude;
+    @Column(name = "date", nullable = false)
+    private Long date;
     @Column(name = "description", nullable = true)
     private String description;
     @Column(name = "pathToThePicture", nullable = true)
     private String pathToThePicture;
 
-
-    @Override
-    public String toString(){
-        return this.name;
-    }
-
     public Event(){
     }
 
-    public Event(String name){
+    public Event(String name, String ownerId, Double latitude, Double longitude, Long date, String description, String pathToThePicture) {
         this.name = name;
+        this.ownerId = ownerId;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.date = date;
+        this.description = description;
+        this.pathToThePicture = pathToThePicture;
     }
 
-    public static boolean deleteEvent(Long id){
-        return false;
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public Long getDate() {
+        return date;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPathToThePicture() {
+        return pathToThePicture;
     }
 }

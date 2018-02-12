@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.google.gson.Gson;
+import com.ogonek.eventsappserver.Pojo.UserName;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.service.UsersService;
 import com.ogonek.eventsappserver.social.ResponseVK;
@@ -37,15 +38,15 @@ public class UsersController {
         return usersService.addUser2(name, token, integrationType, integrationId);
     }
 
-    @RequestMapping(value = "/name/id={id}&token={token}", method = RequestMethod.GET)
-    public String getUserName(@PathVariable Long id, @PathVariable String token){
+    @RequestMapping(value = "/get_name", method = RequestMethod.GET)
+    public String getUserName(@RequestParam("id") Long id, @RequestParam("token") String token){
         if(usersService.verifyToken(id, token))
             return usersService.getUserName(id);
         return "Not verified";
     }
 
-    @RequestMapping(value = "/id/integrationid={integrationid}&integrationtype={integrationtype}", method = RequestMethod.GET)
-    public @ResponseBody long findByIntegration(@PathVariable String integrationid, @PathVariable String integrationtype){
+    @RequestMapping(value = "/get_id", method = RequestMethod.GET)
+    public @ResponseBody long findByIntegration(@RequestParam("integration_id") String integrationid, @RequestParam("integration_type") String integrationtype){
         try {
             return usersService.findByIntegration(integrationid, integrationtype);
         }
@@ -55,59 +56,31 @@ public class UsersController {
     }
 
     @Modifying
-    @RequestMapping(value = "/change/id={id}&token={token}&name={name}", method = RequestMethod.POST)
-    public boolean changeUserName(@PathVariable Long id, @PathVariable String token, @PathVariable String name){
-        if(usersService.verifyToken(id, token))
-            return usersService.changeUserName(id, name);
-        return false;
-    }
-
-    @Modifying
-    @RequestMapping(value = "/change/id={id}&newtoken={newtoken}", method = RequestMethod.POST)
+    @RequestMapping(value = "/change_token?id={id}&new_token={newtoken}", method = RequestMethod.GET)
     public boolean changeUserToken(@PathVariable Long id, @PathVariable String newtoken){
         return usersService.changeUserToken(id, newtoken);
     }
 
     @Modifying
-    @RequestMapping(value = "/delete/id={id}&token={token}", method = RequestMethod.POST)
-    public boolean deleteUser(@PathVariable Long id, @PathVariable String token){
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public boolean deleteUser(@RequestParam("id") Long id, @RequestParam("token") String token){
         if(usersService.verifyToken(id, token))
             return usersService.deleteUser(id);
         return false;
     }
 
     @Modifying
-    @RequestMapping(value = "/loginvk/integrationid={integrationid}&integrationtype={integrationtype}&token={token}", method = RequestMethod.POST)
-    public long loginVK(@PathVariable String integrationid, @PathVariable String integrationtype, @PathVariable String token) throws Exception{
-        String url = "https://api.vk.com/method/users.get?access_token=" + token;
+    @RequestMapping(value = "/loginvk", method = RequestMethod.GET)
+    public long loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("integration_type") String integrationtype, @RequestParam("token") String token) throws Exception{
+        return usersService.loginVK(integrationid, integrationtype, token);
+    }
 
-        URL obj = new URL(url);
-        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-        con.setRequestMethod("GET");
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
-        }
-        in.close();
-
-        long userId = -1;
-        Gson gson = new Gson();
-        try {
-            UserVK userVK = gson.fromJson(response.toString(), UserVK.class);
-            if (userVK.getResponse()[0].getUid().equals(integrationid)) {
-                userId = findByIntegration(integrationid, integrationtype);
-                if (userId == -1) {
-                    return addUser2(userVK.getResponse()[0].getFirst_name(), token, integrationtype, integrationid);
-                }
-            }
-        }
-        catch (NullPointerException ex){
-            return -1;
-        }
-        return userId;
+    @Modifying
+    @RequestMapping(value = "/change_name", method = RequestMethod.POST)
+    public boolean changeUserName(@RequestBody UserName userName){
+        if(usersService.verifyToken(userName.getId(), userName.getToken()))
+            return usersService.changeUserName(userName.getId(), userName.getName());
+        return false;
     }
 
     @Modifying

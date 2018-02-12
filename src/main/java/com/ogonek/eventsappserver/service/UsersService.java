@@ -1,12 +1,19 @@
 package com.ogonek.eventsappserver.service;
 
+import com.google.gson.Gson;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import com.ogonek.eventsappserver.repository.IdPairsRep;
 import com.ogonek.eventsappserver.repository.OwnerIdPairsRep;
 import com.ogonek.eventsappserver.repository.UsersRep;
+import com.ogonek.eventsappserver.social.UserVK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 @Service
 public class UsersService {
@@ -72,5 +79,40 @@ public class UsersService {
 
     public long findByIntegration(String integrationId, String integrationType){
         return usersRep.findByIntegrationIdAndIntegrationType(integrationId, integrationType).getId();
+    }
+
+    public long loginVK(String integrationid, String integrationtype, String token) throws Exception{
+        String url = "https://api.vk.com/method/users.get?access_token=" + token;
+
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+        con.setRequestMethod("GET");
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        long userId = -1;
+        Gson gson = new Gson();
+        try {
+            UserVK userVK = gson.fromJson(response.toString(), UserVK.class);
+            if (userVK.getResponse()[0].getUid().equals(integrationid)) {
+                userId = findByIntegration(integrationid, integrationtype);
+                if (userId == -1) {
+                    return addUser2(userVK.getResponse()[0].getFirst_name(), token, integrationtype, integrationid);
+                }
+                else{
+                    changeUserToken(userId, token);
+                }
+            }
+        }
+        catch (NullPointerException ex){
+            return -1;
+        }
+        return userId;
     }
 }
