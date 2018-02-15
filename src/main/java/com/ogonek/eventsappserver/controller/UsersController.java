@@ -1,11 +1,9 @@
 package com.ogonek.eventsappserver.controller;
 
-import com.google.gson.Gson;
-import com.ogonek.eventsappserver.Pojo.UserName;
+import com.ogonek.eventsappserver.Pojo.PojoNameAndAvatar;
+import com.ogonek.eventsappserver.Pojo.PojoUserName;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.service.UsersService;
-import com.ogonek.eventsappserver.social.ResponseVK;
-import com.ogonek.eventsappserver.social.UserVK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +12,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -55,6 +52,13 @@ public class UsersController {
         }
     }
 
+    @RequestMapping(value = "/get_avatar", method = RequestMethod.GET)
+    public String getAvatar(@RequestParam("id") Long id, @RequestParam("token") String token){
+        if(usersService.verifyToken(id, token))
+            return usersService.getBigAvatarVK(id);
+        return null;
+    }
+
     @Modifying
     @RequestMapping(value = "/change_token?id={id}&new_token={newtoken}", method = RequestMethod.GET)
     public boolean changeUserToken(@PathVariable Long id, @PathVariable String newtoken){
@@ -71,15 +75,15 @@ public class UsersController {
 
     @Modifying
     @RequestMapping(value = "/loginvk", method = RequestMethod.GET)
-    public long loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("integration_type") String integrationtype, @RequestParam("token") String token) throws Exception{
+    public PojoNameAndAvatar loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("integration_type") String integrationtype, @RequestParam("token") String token) throws Exception{
         return usersService.loginVK(integrationid, integrationtype, token);
     }
 
     @Modifying
     @RequestMapping(value = "/change_name", method = RequestMethod.POST)
-    public boolean changeUserName(@RequestBody UserName userName){
-        if(usersService.verifyToken(userName.getId(), userName.getToken()))
-            return usersService.changeUserName(userName.getId(), userName.getName());
+    public boolean changeUserName(@RequestBody PojoUserName pojoUserName){
+        if(usersService.verifyToken(pojoUserName.getId(), pojoUserName.getToken()))
+            return usersService.changeUserName(pojoUserName.getId(), pojoUserName.getName());
         return false;
     }
 

@@ -2,6 +2,7 @@ package com.ogonek.eventsappserver.service;
 
 import com.ogonek.eventsappserver.entity.OwnerIdPair;
 import com.ogonek.eventsappserver.repository.OwnerIdPairsRep;
+import com.ogonek.eventsappserver.repository.UsersRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,15 @@ public class OwnerIdPairsService {
 
     @Autowired
     OwnerIdPairsRep ownerIdPairsRep;
+
+    @Autowired
+    UsersRep usersRep;
+
+    public long addOwnerIdPair(long userId, long eventId) {
+        OwnerIdPair ownerIdPair = new OwnerIdPair(userId, eventId);
+        ownerIdPairsRep.save(ownerIdPair);
+        return ownerIdPair.getId();
+    }
 
     public Iterable<OwnerIdPair> getAll(){
         Iterable<OwnerIdPair> allOwnerIdPairs = ownerIdPairsRep.findAll();

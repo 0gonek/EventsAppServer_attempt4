@@ -32,7 +32,7 @@ public class Event implements Serializable{
     @Column(name = "Type", nullable = true)
     private String type;
     @Column(name = "Participants", nullable = true)
-    private long participants;
+    private Long participants;
 
     public Event(){
     }
@@ -47,7 +47,7 @@ public class Event implements Serializable{
         this.description = description;
         this.pathToThePicture = pathToThePicture;
         this.type = type;
-        this.participants = 1;
+        this.participants = 1L;
     }
 
     public Long getId() {

@@ -1,6 +1,6 @@
 package com.ogonek.eventsappserver.service;
 
-import com.ogonek.eventsappserver.Pojo.EventForMap;
+import com.ogonek.eventsappserver.Pojo.PojoEventForMap;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,19 +76,21 @@ public class EventsService {
         return eventsRep.changeEventParticipants(id, newParticipiants) == 1;
     }
 
-    public void addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, String type, Long duration, String description, String pathToThePicture){
-        eventsRep.save(new Event(name, ownerId, latitude, longitude, date, type, duration, description, pathToThePicture));
+    public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, String type, Long duration, String description, String pathToThePicture){
+        Event event = new Event(name, ownerId, latitude, longitude, date, type, duration, description, pathToThePicture);
+        eventsRep.save(event);
+        return event.getId();
     }
 
-    public EventForMap toEventForMap(Event event){
-        EventForMap eventForMap = new EventForMap(event);
-        return eventForMap;
+    public PojoEventForMap toEventForMap(Event event){
+        PojoEventForMap pojoEventForMap = new PojoEventForMap(event);
+        return pojoEventForMap;
     }
 
-    public List<EventForMap> toListOfEventForMap(List<Event> events){
-        List<EventForMap> ListOfEventsForMap = new ArrayList<EventForMap>();
+    public List<PojoEventForMap> toListOfEventForMap(List<Event> events){
+        List<PojoEventForMap> ListOfEventsForMap = new ArrayList<PojoEventForMap>();
         for (Event event : events) {
-            ListOfEventsForMap.add(new EventForMap(event));
+            ListOfEventsForMap.add(new PojoEventForMap(event));
         }
         return ListOfEventsForMap;
     }

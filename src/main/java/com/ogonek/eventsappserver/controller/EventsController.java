@@ -1,9 +1,16 @@
 package com.ogonek.eventsappserver.controller;
 
+import com.ogonek.eventsappserver.Pojo.PojoEvent;
 import com.ogonek.eventsappserver.entity.Event;
+import com.ogonek.eventsappserver.entity.IdPair;
+import com.ogonek.eventsappserver.entity.OwnerIdPair;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import com.ogonek.eventsappserver.service.EventsService;
+import com.ogonek.eventsappserver.service.IdPairsService;
+import com.ogonek.eventsappserver.service.OwnerIdPairsService;
+import com.ogonek.eventsappserver.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,6 +21,15 @@ public class EventsController {
 
     @Autowired
     EventsService eventsService;
+
+    @Autowired
+    IdPairsService idPairsService;
+
+    @Autowired
+    UsersService usersService;
+
+    @Autowired
+    OwnerIdPairsService ownerIdPairsService;
 
 //    @RequestMapping(value = "/all", method = RequestMethod.GET)
 //    public @ResponseBody Iterable<Long> getAllEvents(){
@@ -36,5 +52,19 @@ public class EventsController {
 //        Iterable<Event> list = eventsService.getAll();
 //        return list;
 //    }
+
+    @Modifying
+    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    public long changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
+        if(usersService.verifyToken(id, token)) {
+            long eventId = eventsService.addEvent(pojoEvent.getName(), pojoEvent.getOwnerId(), pojoEvent.getLatitude(),
+                    pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDuration(),
+                    pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR");
+            idPairsService.addPair(id, eventId);
+            ownerIdPairsService.addOwnerIdPair(id, eventId);
+            return eventId;
+        }
+        return -1;
+    }
 
 }

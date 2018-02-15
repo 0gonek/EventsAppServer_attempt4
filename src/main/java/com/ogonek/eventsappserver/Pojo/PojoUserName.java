@@ -1,6 +1,6 @@
 package com.ogonek.eventsappserver.Pojo;
 
-public class UserName {
+public class PojoUserName {
     private long id;
     private String token;
     private String name;

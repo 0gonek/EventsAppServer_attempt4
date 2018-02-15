@@ -1,14 +1,14 @@
 package com.ogonek.eventsappserver.social;
 
-public class UserVK {
-    private ResponseVK[] response;
+public class UserVKLogin {
+    private ResponseVkLogin[] response;
 
-    public ResponseVK[] getResponse ()
+    public ResponseVkLogin[] getResponse ()
     {
         return response;
     }
 
-    public void setResponse (ResponseVK[] response)
+    public void setResponse (ResponseVkLogin[] response)
     {
         this.response = response;
     }
