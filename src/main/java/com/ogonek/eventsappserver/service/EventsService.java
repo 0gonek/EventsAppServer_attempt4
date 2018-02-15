@@ -1,5 +1,6 @@
 package com.ogonek.eventsappserver.service;
 
+import com.ogonek.eventsappserver.Pojo.EventForMap;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,6 +78,19 @@ public class EventsService {
 
     public void addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, String type, Long duration, String description, String pathToThePicture){
         eventsRep.save(new Event(name, ownerId, latitude, longitude, date, type, duration, description, pathToThePicture));
+    }
+
+    public EventForMap toEventForMap(Event event){
+        EventForMap eventForMap = new EventForMap(event);
+        return eventForMap;
+    }
+
+    public List<EventForMap> toListOfEventForMap(List<Event> events){
+        List<EventForMap> ListOfEventsForMap = new ArrayList<EventForMap>();
+        for (Event event : events) {
+            ListOfEventsForMap.add(new EventForMap(event));
+        }
+        return ListOfEventsForMap;
     }
 
 }

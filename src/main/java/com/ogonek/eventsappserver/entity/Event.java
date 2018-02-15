@@ -24,7 +24,7 @@ public class Event implements Serializable{
     @Column(name = "date", nullable = false)
     private Long date;
     @Column(name = "duration", nullable = false)
-    private Long duration = 43200000L;
+    private Long duration;
     @Column(name = "description", nullable = true)
     private String description;
     @Column(name = "pathToThePicture", nullable = true)
