@@ -101,7 +101,13 @@ public class UsersService {
         try {
             UserVK userVK = gson.fromJson(response.toString(), UserVK.class);
             if (userVK.getResponse()[0].getUid().equals(integrationid)) {
-                userId = findByIntegration(integrationid, integrationtype);
+                try {
+                    userId = findByIntegration(integrationid, integrationtype);
+                }
+                catch (NullPointerException ex)
+                {
+                    userId = -1;
+                }
                 if (userId == -1) {
                     return addUser2(userVK.getResponse()[0].getFirst_name(), token, integrationtype, integrationid);
                 }
