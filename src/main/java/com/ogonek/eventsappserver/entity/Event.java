@@ -16,29 +16,38 @@ public class Event implements Serializable{
     @Column(name = "name", nullable = false)
     private String name;
     @Column(name = "ownerId", nullable = false)
-    private String ownerId;
+    private Long ownerId;
     @Column(name = "latitude", nullable = false)
     private Double latitude;
     @Column(name = "longitude", nullable = false)
     private Double longitude;
     @Column(name = "date", nullable = false)
     private Long date;
+    @Column(name = "duration", nullable = false)
+    private Long duration = 43200000L;
     @Column(name = "description", nullable = true)
     private String description;
     @Column(name = "pathToThePicture", nullable = true)
     private String pathToThePicture;
+    @Column(name = "Type", nullable = true)
+    private String type;
+    @Column(name = "Participants", nullable = true)
+    private long participants;
 
     public Event(){
     }
 
-    public Event(String name, String ownerId, Double latitude, Double longitude, Long date, String description, String pathToThePicture) {
+    public Event(String name, long ownerId, Double latitude, Double longitude, Long date, String type, Long duration, String description, String pathToThePicture) {
         this.name = name;
         this.ownerId = ownerId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
+        this.duration = duration;
         this.description = description;
         this.pathToThePicture = pathToThePicture;
+        this.type = type;
+        this.participants = 1;
     }
 
     public Long getId() {
@@ -49,7 +58,7 @@ public class Event implements Serializable{
         return name;
     }
 
-    public String getOwnerId() {
+    public Long getOwnerId() {
         return ownerId;
     }
 
@@ -65,11 +74,23 @@ public class Event implements Serializable{
         return date;
     }
 
+    public Long getDuration() {
+        return duration;
+    }
+
     public String getDescription() {
         return description;
     }
 
     public String getPathToThePicture() {
         return pathToThePicture;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public long getParticipants() {
+        return participants;
     }
 }

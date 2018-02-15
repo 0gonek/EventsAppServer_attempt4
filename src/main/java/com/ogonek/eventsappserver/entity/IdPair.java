@@ -13,7 +13,6 @@ public class IdPair implements Serializable{
 
     @Column(name = "userId", nullable = false)
     private Long userId;
-
     @Column(name = "eventId", nullable = false)
     private Long eventId;
 

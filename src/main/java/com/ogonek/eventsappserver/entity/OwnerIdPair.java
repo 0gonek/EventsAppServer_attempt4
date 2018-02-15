@@ -12,7 +12,6 @@ public class OwnerIdPair implements Serializable{
 
     @Column(name = "ownerId", nullable = false)
     private Long ownerId;
-
     @Column(name = "eventId", nullable = false)
     private Long eventId;
 
