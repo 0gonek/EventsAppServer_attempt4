@@ -4,16 +4,16 @@ import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class PojoNameAndBigAvatar {
+public class PojoNameAndAvatar {
 
     private long serverID;
     private String name;
     private String avatar;
 
-    public PojoNameAndBigAvatar() {
+    public PojoNameAndAvatar() {
     }
 
-    public PojoNameAndBigAvatar(long serverID, String name, String avatar) {
+    public PojoNameAndAvatar(long serverID, String name, String avatar) {
         this.serverID = serverID;
         this.name = name;
         this.avatar = avatar;

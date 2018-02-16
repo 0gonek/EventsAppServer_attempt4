@@ -47,7 +47,7 @@ public class Event implements Serializable{
         this.description = description;
         this.pathToThePicture = pathToThePicture;
         this.type = type;
-        this.participants = 1L;
+        this.participants = 0L;
     }
 
     public Long getId() {

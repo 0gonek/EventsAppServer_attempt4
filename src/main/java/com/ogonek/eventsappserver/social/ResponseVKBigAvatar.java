@@ -1,6 +1,6 @@
 package com.ogonek.eventsappserver.social;
 
-public class ResponseVKAvatar {
+public class ResponseVKBigAvatar {
     private String uid;
 
     private String first_name;

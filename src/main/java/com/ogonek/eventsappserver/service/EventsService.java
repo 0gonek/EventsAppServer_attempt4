@@ -1,5 +1,6 @@
 package com.ogonek.eventsappserver.service;
 
+import com.ogonek.eventsappserver.Pojo.PojoEvent;
 import com.ogonek.eventsappserver.Pojo.PojoEventForMap;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.entity.IdPair;
@@ -27,6 +28,14 @@ public class EventsService {
     public Iterable<Event> getAll() {
         Iterable<Event> iterable = eventsRep.findAll();
         return iterable;
+    }
+
+    public PojoEvent getPojoEvent(long id){
+        Event event = eventsRep.findById(id);
+        PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), event.getOwnerId(), event.getLatitude(),
+                event.getLongitude(), event.getDate(), event.getDuration(), event.getDescription(), event.getPathToThePicture(),
+                event.getType(), event.getParticipants());
+        return pojoEvent;
     }
 
 //    public List<Long> getAllId(){

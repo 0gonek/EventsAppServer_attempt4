@@ -1,14 +1,16 @@
 package com.ogonek.eventsappserver.service;
 
 import com.google.gson.Gson;
-import com.ogonek.eventsappserver.Pojo.PojoNameAndBigAvatar;
+import com.ogonek.eventsappserver.Pojo.PojoNameAndAvatar;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import com.ogonek.eventsappserver.repository.IdPairsRep;
 import com.ogonek.eventsappserver.repository.OwnerIdPairsRep;
 import com.ogonek.eventsappserver.repository.UsersRep;
-import com.ogonek.eventsappserver.social.UserVKAvatar;
+import com.ogonek.eventsappserver.social.ResponseVKSmallAvatar;
+import com.ogonek.eventsappserver.social.UserVKBigAvatar;
 import com.ogonek.eventsappserver.social.UserVKLogin;
+import com.ogonek.eventsappserver.social.UserVkSmallAvatar;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,8 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UsersService {
@@ -101,8 +105,8 @@ public class UsersService {
 
             Gson gson = new Gson();
             try {
-                UserVKAvatar userVKAvatar = gson.fromJson(response.toString(), UserVKAvatar.class);
-                return userVKAvatar.getResponse()[0].getPhoto_200();
+                UserVKBigAvatar userVKBigAvatar = gson.fromJson(response.toString(), UserVKBigAvatar.class);
+                return userVKBigAvatar.getResponse()[0].getPhoto_200();
             } catch (NullPointerException ex) {
                 return null;
             }
@@ -112,7 +116,47 @@ public class UsersService {
         }
     }
 
-    public PojoNameAndBigAvatar loginVK(String integrationid, String token) throws Exception{
+    public List<String> getSmallAvatarsVK(Long[] id){
+        String url = "https://api.vk.com/method/users.get?user_ids=";
+        int n = id.length;
+        url += usersRep.findById(id[0]).getIntegrationId();
+        for (int i = 1; i < n; i++) {
+            url += "," + usersRep.findById(id[i]).getIntegrationId();
+        }
+        url += "&fields=photo_50";
+        try {
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+            in.close();
+
+            Gson gson = new Gson();
+            try {
+                UserVkSmallAvatar userVkSmallAvatar = gson.fromJson(response.toString(), UserVkSmallAvatar.class);
+                List<String> avatars = new ArrayList<String>();
+                n = userVkSmallAvatar.getResponse().length;
+                ResponseVKSmallAvatar responseVKSmallAvatar[] = userVkSmallAvatar.getResponse();
+                for (int i = 0; i < n; i++) {
+                    avatars.add(responseVKSmallAvatar[i].getPhoto_50());
+                }
+                return avatars;
+            } catch (NullPointerException ex) {
+                return null;
+            }
+        }
+        catch (Exception ex){
+            return null;
+        }
+    }
+
+    public PojoNameAndAvatar loginVK(String integrationid, String token) throws Exception{
         String url = "https://api.vk.com/method/users.get?access_token=" + token;
 
         URL obj = new URL(url);
@@ -146,7 +190,7 @@ public class UsersService {
                     changeUserToken(userId, token);
                 }
                 User user = usersRep.findById(userId);
-                return new PojoNameAndBigAvatar(userId, user.getName(), getBigAvatarVK(userId));
+                return new PojoNameAndAvatar(userId, user.getName(), getBigAvatarVK(userId));
             }
             else
                 return null;

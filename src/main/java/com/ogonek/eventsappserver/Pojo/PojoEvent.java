@@ -18,6 +18,7 @@ public class PojoEvent {
 
     public PojoEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
                      String description, String picture, String type, Long participants) {
+        this.id = id;
         this.name = name;
         this.ownerId = ownerId;
         this.latitude = latitude;

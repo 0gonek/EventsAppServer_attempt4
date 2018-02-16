@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.ogonek.eventsappserver.Pojo.PojoEvent;
+import com.ogonek.eventsappserver.Pojo.PojoUsersList;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.entity.IdPair;
 import com.ogonek.eventsappserver.entity.OwnerIdPair;
@@ -54,6 +55,16 @@ public class EventsController {
 //    }
 
     @Modifying
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public PojoEvent getEvent(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                               @RequestParam("event_id") Long eventId){
+        if(usersService.verifyToken(userId, token)) {
+            return eventsService.getPojoEvent(eventId);
+        }
+        return null;
+    }
+
+    @Modifying
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public long changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
         if(usersService.verifyToken(id, token)) {
@@ -68,7 +79,7 @@ public class EventsController {
     }
 
     @Modifying
-        @RequestMapping(value = "/new_perticipiant", method = RequestMethod.GET)
+    @RequestMapping(value = "/new_perticipant", method = RequestMethod.GET)
     public boolean changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token,
                                   @RequestParam("event_id") Long eventId){
         if(usersService.verifyToken(id, token)) {
@@ -85,6 +96,16 @@ public class EventsController {
             return eventsService.deleteOwnEvent(userId, eventId);
         }
         return false;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/participants", method = RequestMethod.GET)
+    public PojoUsersList getEventParticipants(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                                              @RequestParam("event_id") Long eventId){
+        if(usersService.verifyToken(userId, token)) {
+            return idPairsService.getUsersByEventId(eventId);
+        }
+        return null;
     }
 
 }
