@@ -1,6 +1,6 @@
 package com.ogonek.eventsappserver.service;
 
-import com.ogonek.eventsappserver.Pojo.PojoNameAndAvatar;
+import com.ogonek.eventsappserver.Pojo.PojoNameAndBigAvatar;
 import com.ogonek.eventsappserver.entity.IdPair;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.repository.IdPairsRep;
@@ -8,7 +8,6 @@ import com.ogonek.eventsappserver.repository.UsersRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,10 +21,13 @@ public class IdPairsService {
     @Autowired
     UsersService usersService;
 
-    public long addPair(long userId, long eventId){
-        IdPair idPair = new IdPair(userId, eventId);
-        idPairsRep.save(idPair);
-        return idPair.getId();
+    public boolean addPair(long userId, long eventId){
+        if(idPairsRep.findByUserIdAndEventId(userId,eventId) == null){
+            IdPair idPair = new IdPair(userId, eventId);
+            idPairsRep.save(idPair);
+            return true;
+        }
+        return false;
     }
 
     public Iterable<IdPair> getAll(){
@@ -53,15 +55,15 @@ public class IdPairsService {
         return true;
     }
 
-    public List<PojoNameAndAvatar> getNamesAndAvatars(long eventId){
+    public List<PojoNameAndBigAvatar> getNamesAndAvatars(long eventId){
         List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
-        List<PojoNameAndAvatar> pojoNameAndAvatars = new LinkedList<PojoNameAndAvatar>();
+        List<PojoNameAndBigAvatar> pojoNameAndBigAvatars = new LinkedList<PojoNameAndBigAvatar>();
         for (IdPair idPair : idPairs) {
             long userId = idPair.getUserId();
             User user = usersRep.findById(userId);
-            pojoNameAndAvatars.add(new PojoNameAndAvatar(userId, user.getName(), usersService.getBigAvatarVK(userId)));
+            pojoNameAndBigAvatars.add(new PojoNameAndBigAvatar(userId, user.getName(), usersService.getBigAvatarVK(userId)));
         }
-        return pojoNameAndAvatars;
+        return pojoNameAndBigAvatars;
     }
 
 }

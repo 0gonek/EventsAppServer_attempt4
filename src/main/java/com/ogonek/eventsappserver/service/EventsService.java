@@ -2,7 +2,10 @@ package com.ogonek.eventsappserver.service;
 
 import com.ogonek.eventsappserver.Pojo.PojoEventForMap;
 import com.ogonek.eventsappserver.entity.Event;
+import com.ogonek.eventsappserver.entity.IdPair;
 import com.ogonek.eventsappserver.repository.EventsRep;
+import com.ogonek.eventsappserver.repository.IdPairsRep;
+import com.ogonek.eventsappserver.repository.OwnerIdPairsRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +17,12 @@ public class EventsService {
 
     @Autowired
     EventsRep eventsRep;
+
+    @Autowired
+    OwnerIdPairsRep ownerIdPairsRep;
+
+    @Autowired
+    IdPairsRep idPairsRep;
 
     public Iterable<Event> getAll() {
         Iterable<Event> iterable = eventsRep.findAll();
@@ -38,6 +47,20 @@ public class EventsService {
     public List<Event> getOwnEvents(long ownerId){
         List<Event> events = eventsRep.findAllByOwnerId(ownerId);
         return  events;
+    }
+
+    public boolean deleteOwnEvent(long userId, long eventId){
+        Event event = eventsRep.findById(eventId);
+        if(event.getOwnerId() == userId){
+            eventsRep.deleteById(eventId);
+            ownerIdPairsRep.deleteById(ownerIdPairsRep.findByEventId(eventId).getId());
+            List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
+            for (IdPair idPair:idPairs) {
+                idPairsRep.deleteById(idPair.getId());
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean changeEventName(long id, String newName){

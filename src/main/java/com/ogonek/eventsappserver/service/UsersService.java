@@ -1,7 +1,7 @@
 package com.ogonek.eventsappserver.service;
 
 import com.google.gson.Gson;
-import com.ogonek.eventsappserver.Pojo.PojoNameAndAvatar;
+import com.ogonek.eventsappserver.Pojo.PojoNameAndBigAvatar;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import com.ogonek.eventsappserver.repository.IdPairsRep;
@@ -112,7 +112,7 @@ public class UsersService {
         }
     }
 
-    public PojoNameAndAvatar loginVK(String integrationid, String integrationtype, String token) throws Exception{
+    public PojoNameAndBigAvatar loginVK(String integrationid, String token) throws Exception{
         String url = "https://api.vk.com/method/users.get?access_token=" + token;
 
         URL obj = new URL(url);
@@ -133,20 +133,20 @@ public class UsersService {
             UserVKLogin userVKLogin = gson.fromJson(response.toString(), UserVKLogin.class);
             if (userVKLogin.getResponse()[0].getUid().equals(integrationid)) {
                 try {
-                    userId = findByIntegration(integrationid, integrationtype);
+                    userId = findByIntegration(integrationid, "VK");
                 }
                 catch (NullPointerException ex)
                 {
                     userId = -1;
                 }
                 if (userId == -1) {
-                    userId = addUser2(userVKLogin.getResponse()[0].getFirst_name(), token, integrationtype, integrationid);
+                    userId = addUser2(userVKLogin.getResponse()[0].getFirst_name(), token, "VK", integrationid);
                 }
                 else{
                     changeUserToken(userId, token);
                 }
                 User user = usersRep.findById(userId);
-                return new PojoNameAndAvatar(userId, user.getName(), getBigAvatarVK(userId));
+                return new PojoNameAndBigAvatar(userId, user.getName(), getBigAvatarVK(userId));
             }
             else
                 return null;

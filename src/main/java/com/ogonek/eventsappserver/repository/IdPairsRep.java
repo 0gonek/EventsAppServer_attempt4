@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface IdPairsRep extends JpaRepository<IdPair, Long> {
     IdPair findById (long id);
+    IdPair findByUserIdAndEventId (long userId, long eventId);
     List<IdPair> findAllByUserId(long userId);
     List<IdPair> findAllByEventId(long eventId);
     @Transactional

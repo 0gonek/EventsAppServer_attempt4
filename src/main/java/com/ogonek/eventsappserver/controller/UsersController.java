@@ -1,6 +1,6 @@
 package com.ogonek.eventsappserver.controller;
 
-import com.ogonek.eventsappserver.Pojo.PojoNameAndAvatar;
+import com.ogonek.eventsappserver.Pojo.PojoNameAndBigAvatar;
 import com.ogonek.eventsappserver.Pojo.PojoUserName;
 import com.ogonek.eventsappserver.entity.User;
 import com.ogonek.eventsappserver.service.UsersService;
@@ -75,8 +75,8 @@ public class UsersController {
 
     @Modifying
     @RequestMapping(value = "/loginvk", method = RequestMethod.GET)
-    public PojoNameAndAvatar loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("integration_type") String integrationtype, @RequestParam("token") String token) throws Exception{
-        return usersService.loginVK(integrationid, integrationtype, token);
+    public PojoNameAndBigAvatar loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("token") String token) throws Exception{
+        return usersService.loginVK(integrationid, token);
     }
 
     @Modifying

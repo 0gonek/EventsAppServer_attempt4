@@ -10,6 +10,7 @@ import java.util.List;
 @Repository
 public interface OwnerIdPairsRep extends JpaRepository<OwnerIdPair, Long> {
     OwnerIdPair findById(Long id);
+    OwnerIdPair findByOwnerIdAndEventId (long ownerId, long eventId);
     List<OwnerIdPair> findAllByOwnerId(long ownerId);
     OwnerIdPair findByEventId(long eventId);
     @Transactional

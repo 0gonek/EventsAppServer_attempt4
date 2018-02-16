@@ -67,4 +67,24 @@ public class EventsController {
         return -1;
     }
 
+    @Modifying
+        @RequestMapping(value = "/new_perticipiant", method = RequestMethod.GET)
+    public boolean changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token,
+                                  @RequestParam("event_id") Long eventId){
+        if(usersService.verifyToken(id, token)) {
+            return idPairsService.addPair(id, eventId);
+        }
+        return false;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    public boolean deleteEvent(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                                  @RequestParam("event_id") Long eventId){
+        if(usersService.verifyToken(userId, token)) {
+            return eventsService.deleteOwnEvent(userId, eventId);
+        }
+        return false;
+    }
+
 }
