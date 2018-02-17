@@ -29,8 +29,9 @@ public class IdPairsService {
     public boolean addPair(long userId, long eventId){
         if(idPairsRep.findByUserIdAndEventId(userId,eventId) == null){
             IdPair idPair = new IdPair(userId, eventId);
+            if(eventsRep.findById(eventId) == null) return false;
             idPairsRep.save(idPair);
-            long participants = eventsRep.findById(eventId).getParticipants();
+            Long participants = eventsRep.findById(eventId).getParticipants();
             eventsRep.changeEventParticipants(eventId, participants+1);
             return true;
         }

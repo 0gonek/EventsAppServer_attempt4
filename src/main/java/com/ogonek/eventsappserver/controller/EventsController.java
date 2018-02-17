@@ -68,7 +68,7 @@ public class EventsController {
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public long changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
         if(usersService.verifyToken(id, token)) {
-            long eventId = eventsService.addEvent(pojoEvent.getName(), pojoEvent.getOwnerId(), pojoEvent.getLatitude(),
+            long eventId = eventsService.addEvent(pojoEvent.getName(), id, pojoEvent.getLatitude(),
                     pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDuration(),
                     pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR");
             idPairsService.addPair(id, eventId);
