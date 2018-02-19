@@ -1,12 +1,8 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.ogonek.eventsappserver.Pojo.PojoEvent;
-import com.ogonek.eventsappserver.Pojo.PojoEventsForMap;
+import com.ogonek.eventsappserver.Pojo.PojoSmallEvents;
 import com.ogonek.eventsappserver.Pojo.PojoUsersList;
-import com.ogonek.eventsappserver.entity.Event;
-import com.ogonek.eventsappserver.entity.IdPair;
-import com.ogonek.eventsappserver.entity.OwnerIdPair;
-import com.ogonek.eventsappserver.repository.EventsRep;
 import com.ogonek.eventsappserver.service.EventsService;
 import com.ogonek.eventsappserver.service.IdPairsService;
 import com.ogonek.eventsappserver.service.OwnerIdPairsService;
@@ -14,8 +10,6 @@ import com.ogonek.eventsappserver.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/events")
@@ -67,7 +61,7 @@ public class EventsController {
 
     @Modifying
     @RequestMapping(value = "/get_own", method = RequestMethod.GET)
-    public PojoEventsForMap getOwnEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
+    public PojoSmallEvents getOwnEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
         if(usersService.verifyToken(userId, token)) {
             return eventsService.getOwnEvents(userId);
         }
@@ -76,7 +70,7 @@ public class EventsController {
 
     @Modifying
     @RequestMapping(value = "/get_present", method = RequestMethod.GET)
-    public PojoEventsForMap getPresentEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
+    public PojoSmallEvents getPresentEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
         if(usersService.verifyToken(userId, token)) {
             return eventsService.getPresentEvents(userId);
         }

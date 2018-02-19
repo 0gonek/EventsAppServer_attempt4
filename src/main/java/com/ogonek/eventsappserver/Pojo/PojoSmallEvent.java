@@ -2,7 +2,7 @@ package com.ogonek.eventsappserver.Pojo;
 
 import com.ogonek.eventsappserver.entity.Event;
 
-public class PojoEventForMap {
+public class PojoSmallEvent {
     private Long id;
     private String name;
     private Long ownerId;
@@ -13,10 +13,10 @@ public class PojoEventForMap {
     private String type;
     private Long participants;
 
-    public PojoEventForMap(){}
+    public PojoSmallEvent(){}
 
-    public PojoEventForMap(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
-                           String type, Long participants) {
+    public PojoSmallEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
+                          String type, Long participants) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -28,7 +28,7 @@ public class PojoEventForMap {
         this.participants = participants;
     }
 
-    public PojoEventForMap(Event event){
+    public PojoSmallEvent(Event event){
         this.id = event.getId();
         this.name = event.getName();
         this.ownerId = event.getOwnerId();
