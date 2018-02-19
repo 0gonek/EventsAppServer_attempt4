@@ -2,8 +2,10 @@ package com.ogonek.eventsappserver.service;
 
 import com.ogonek.eventsappserver.Pojo.PojoEvent;
 import com.ogonek.eventsappserver.Pojo.PojoEventForMap;
+import com.ogonek.eventsappserver.Pojo.PojoEventsForMap;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.entity.IdPair;
+import com.ogonek.eventsappserver.entity.OwnerIdPair;
 import com.ogonek.eventsappserver.repository.EventsRep;
 import com.ogonek.eventsappserver.repository.IdPairsRep;
 import com.ogonek.eventsappserver.repository.OwnerIdPairsRep;
@@ -48,14 +50,29 @@ public class EventsService {
 //        return output;
 //    }
 
-    public List<Event> getEventsBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
+    public PojoEventsForMap getEventsBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
         List<Event> events = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThan(minLatitude, maxLatitude, minLongitude, maxLongitude);
-        return events;
+        return toPojoEventsForMap(events);
     }
 
-    public List<Event> getOwnEvents(long ownerId){
-        List<Event> events = eventsRep.findAllByOwnerId(ownerId);
-        return  events;
+    public PojoEventsForMap getOwnEvents(long ownerId){
+        List<OwnerIdPair> pairs = ownerIdPairsRep.findAllByOwnerId(ownerId);
+        List<Long> eventsId = new ArrayList<>();
+        for (OwnerIdPair pair : pairs) {
+            eventsId.add(pair.getEventId());
+        }
+        List<Event> events = eventsRep.findAll(eventsId);
+        return toPojoEventsForMap(events);
+    }
+
+    public PojoEventsForMap getPresentEvents(long userId){
+        List<IdPair> pairs = idPairsRep.findAllByUserId(userId);
+        List<Long> eventsId = new ArrayList<>();
+        for (IdPair pair : pairs) {
+            eventsId.add(pair.getEventId());
+        }
+        List<Event> events = eventsRep.findAll(eventsId);
+        return toPojoEventsForMap(events);
     }
 
     public boolean deleteOwnEvent(long userId, long eventId){
@@ -119,12 +136,14 @@ public class EventsService {
         return pojoEventForMap;
     }
 
-    public List<PojoEventForMap> toListOfEventForMap(List<Event> events){
-        List<PojoEventForMap> ListOfEventsForMap = new ArrayList<PojoEventForMap>();
+    public PojoEventsForMap toPojoEventsForMap(List<Event> events){
+        List<PojoEventForMap> listOfEventsForMap = new ArrayList<PojoEventForMap>();
         for (Event event : events) {
-            ListOfEventsForMap.add(new PojoEventForMap(event));
+            listOfEventsForMap.add(new PojoEventForMap(event));
         }
-        return ListOfEventsForMap;
+        PojoEventForMap[] pojoEventsForMap = new PojoEventForMap[events.size()];
+        pojoEventsForMap = listOfEventsForMap.toArray(pojoEventsForMap);
+        return new PojoEventsForMap(pojoEventsForMap);
     }
 
 }

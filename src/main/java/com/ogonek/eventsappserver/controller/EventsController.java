@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.ogonek.eventsappserver.Pojo.PojoEvent;
+import com.ogonek.eventsappserver.Pojo.PojoEventsForMap;
 import com.ogonek.eventsappserver.Pojo.PojoUsersList;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.entity.IdPair;
@@ -60,6 +61,24 @@ public class EventsController {
                                @RequestParam("event_id") Long eventId){
         if(usersService.verifyToken(userId, token)) {
             return eventsService.getPojoEvent(eventId);
+        }
+        return null;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/get_own", method = RequestMethod.GET)
+    public PojoEventsForMap getOwnEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
+        if(usersService.verifyToken(userId, token)) {
+            return eventsService.getOwnEvents(userId);
+        }
+        return null;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/get_present", method = RequestMethod.GET)
+    public PojoEventsForMap getPresentEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
+        if(usersService.verifyToken(userId, token)) {
+            return eventsService.getPresentEvents(userId);
         }
         return null;
     }
