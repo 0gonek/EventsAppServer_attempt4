@@ -13,12 +13,15 @@ import java.util.List;
 public interface EventsRep extends JpaRepository<Event, Long> {
     Event findById (long id);
     List<Event> findAllByOwnerId (long id);
-    List<Event> findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThan(double minLatitude,
-                                                                                                        double maxLatitude,
-                                                                                                        double minLongitude,
-                                                                                                        double maxLongitude);
+    List<Event> findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeGreaterThan(double minLatitude,
+                                                                                                                            double maxLatitude,
+                                                                                                                            double minLongitude,
+                                                                                                                            double maxLongitude,
+                                                                                                                            long currentTime);
     @Transactional
     void deleteById(long id);
+    @Transactional
+    void deleteAllByEndTimeGreaterThan(long endTime);
     @Transactional
     @Modifying
     @Query("update Event e set e.name = ?2 where e.id = ?1")
@@ -37,8 +40,8 @@ public interface EventsRep extends JpaRepository<Event, Long> {
     int changeEventDate(Long id, long date);
     @Transactional
     @Modifying
-    @Query("update Event e set e.duration = ?2 where e.id = ?1")
-    int changeEventDuration(Long id, long duration);
+    @Query("update Event e set e.endTime = ?2 where e.id = ?1")
+    int changeEventEndTime(Long id, long endTime);
     @Transactional
     @Modifying
     @Query("update Event e set e.description = ?2 where e.id = ?1")
@@ -54,5 +57,5 @@ public interface EventsRep extends JpaRepository<Event, Long> {
     @Transactional
     @Modifying
     @Query("update Event e set e.participants = ?2 where e.id = ?1")
-    int changeEventParticipants(Long id, long participants);
+    int changeEventParticipants(Long id, Long participants);
 }

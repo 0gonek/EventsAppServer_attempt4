@@ -23,8 +23,8 @@ public class Event implements Serializable{
     private Double longitude;
     @Column(name = "date", nullable = false)
     private Long date;
-    @Column(name = "duration", nullable = false)
-    private Long duration;
+    @Column(name = "endtime", nullable = false)
+    private Long endTime;
     @Column(name = "description", nullable = true)
     private String description;
     @Column(name = "pathToThePicture", nullable = true)
@@ -33,21 +33,25 @@ public class Event implements Serializable{
     private String type;
     @Column(name = "Participants", nullable = true)
     private Long participants;
+    @Column(name = "GroupID", nullable = true)
+    private Long groupID;
 
     public Event(){
     }
 
-    public Event(String name, long ownerId, Double latitude, Double longitude, Long date, String type, Long duration, String description, String pathToThePicture) {
+    public Event(String name, long ownerId, Double latitude, Double longitude, Long date, String type, Long endTime,
+                 String description, String pathToThePicture, Long groupID) {
         this.name = name;
         this.ownerId = ownerId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
-        this.duration = duration;
+        this.endTime = endTime;
         this.description = description;
         this.pathToThePicture = pathToThePicture;
         this.type = type;
         this.participants = 0L;
+        this.groupID = groupID;
     }
 
     public Long getId() {
@@ -74,8 +78,8 @@ public class Event implements Serializable{
         return date;
     }
 
-    public Long getDuration() {
-        return duration;
+    public Long getEndTime() {
+        return endTime;
     }
 
     public String getDescription() {
@@ -92,5 +96,9 @@ public class Event implements Serializable{
 
     public long getParticipants() {
         return participants;
+    }
+
+    public Long getGroupID() {
+        return groupID;
     }
 }

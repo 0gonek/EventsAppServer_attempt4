@@ -5,39 +5,24 @@ import com.ogonek.eventsappserver.entity.Event;
 public class PojoSmallEvent {
     private Long id;
     private String name;
-    private Long ownerId;
-    private Double latitude;
-    private Double longitude;
     private Long date;
-    private Long duration;
-    private String type;
-    private Long participants;
+    private String description;
 
-    public PojoSmallEvent(){}
+    public PojoSmallEvent() {
+    }
 
-    public PojoSmallEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
-                          String type, Long participants) {
+    public PojoSmallEvent(Long id, String name, Long date, String description) {
         this.id = id;
         this.name = name;
-        this.ownerId = ownerId;
-        this.latitude = latitude;
-        this.longitude = longitude;
         this.date = date;
-        this.duration = duration;
-        this.type = type;
-        this.participants = participants;
+        this.description = description;
     }
 
     public PojoSmallEvent(Event event){
         this.id = event.getId();
         this.name = event.getName();
-        this.ownerId = event.getOwnerId();
-        this.latitude = event.getLatitude();
-        this.longitude = event.getLongitude();
         this.date = event.getDate();
-        this.duration = event.getDuration();
-        this.type = event.getType();
-        this.participants = event.getParticipants();
+        this.description = event.getDescription();
     }
 
     public Long getId() {
@@ -56,30 +41,6 @@ public class PojoSmallEvent {
         this.name = name;
     }
 
-    public Long getOwnerId() {
-        return ownerId;
-    }
-
-    public void setOwnerId(Long ownerId) {
-        this.ownerId = ownerId;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
     public Long getDate() {
         return date;
     }
@@ -88,27 +49,11 @@ public class PojoSmallEvent {
         this.date = date;
     }
 
-    public Long getDuration() {
-        return duration;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDuration(Long duration) {
-        this.duration = duration;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Long getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(Long participants) {
-        this.participants = participants;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

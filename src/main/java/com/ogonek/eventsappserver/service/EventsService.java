@@ -1,8 +1,6 @@
 package com.ogonek.eventsappserver.service;
 
-import com.ogonek.eventsappserver.Pojo.PojoEvent;
-import com.ogonek.eventsappserver.Pojo.PojoSmallEvent;
-import com.ogonek.eventsappserver.Pojo.PojoSmallEvents;
+import com.ogonek.eventsappserver.Pojo.*;
 import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.entity.IdPair;
 import com.ogonek.eventsappserver.entity.OwnerIdPair;
@@ -13,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -34,24 +33,34 @@ public class EventsService {
 
     public PojoEvent getPojoEvent(long id){
         Event event = eventsRep.findById(id);
-        PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), event.getOwnerId(), event.getLatitude(),
-                event.getLongitude(), event.getDate(), event.getDuration(), event.getDescription(), event.getPathToThePicture(),
-                event.getType(), event.getParticipants());
+        PojoEvent pojoEvent = new PojoEvent(event);
         return pojoEvent;
     }
 
-//    public List<Long> getAllId(){
-//        List<Event> allEvents = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThan(-200, 200,-200,200);
-//        List<Long> output = new ArrayList<>();
-//        for (Event e:allEvents
-//             ) {
-//            output.add(e.getId());
-//        }
-//        return output;
-//    }
-
-    public PojoSmallEvents getEventsBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
-        List<Event> events = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThan(minLatitude, maxLatitude, minLongitude, maxLongitude);
+    public PojoMidEvents getEventsBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
+        Date date = new Date();
+        Long currentTime = date.getTime();
+        List<Event> events = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeGreaterThan(minLatitude,
+                maxLatitude, minLongitude, maxLongitude, currentTime);
+        List<Long> oldEventIds = new ArrayList<>();
+        int n = events.size();
+        for (int i = 0; i < n; i++) {
+            if(events.get(i).getEndTime() < currentTime){
+                oldEventIds.add(events.get(i).getId());
+                events.remove(i);
+                i--;
+                n--;
+            }
+        }
+        for (Long eventId:
+             oldEventIds) {
+            eventsRep.deleteById(eventId);
+            ownerIdPairsRep.deleteById(ownerIdPairsRep.findByEventId(eventId).getId());
+            List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
+            for (IdPair idPair:idPairs) {
+                idPairsRep.deleteById(idPair.getId());
+            }
+        }
         return toPojoEventsForMap(events);
     }
 
@@ -62,7 +71,7 @@ public class EventsService {
             eventsId.add(pair.getEventId());
         }
         List<Event> events = eventsRep.findAll(eventsId);
-        return toPojoEventsForMap(events);
+        return toSmallEvents(events);
     }
 
     public PojoSmallEvents getPresentEvents(long userId){
@@ -72,7 +81,7 @@ public class EventsService {
             eventsId.add(pair.getEventId());
         }
         List<Event> events = eventsRep.findAll(eventsId);
-        return toPojoEventsForMap(events);
+        return toSmallEvents(events);
     }
 
     public boolean deleteOwnEvent(long userId, long eventId){
@@ -87,6 +96,11 @@ public class EventsService {
             return true;
         }
         return false;
+    }
+
+    public boolean deleteOld(long time){
+        eventsRep.deleteAllByEndTimeGreaterThan(time);
+        return true;
     }
 
     public boolean changeEventName(long id, String newName){
@@ -105,8 +119,8 @@ public class EventsService {
         return eventsRep.changeEventDate(id, newDate) == 1;
     }
 
-    public boolean changeEventDuration(long id, long newDuration){
-        return eventsRep.changeEventDuration(id, newDuration) == 1;
+    public boolean changeEventEndTime(long id, long newEndTime){
+        return eventsRep.changeEventEndTime(id, newEndTime) == 1;
     }
 
     public boolean changeEventDescription(long id, String newDescription){
@@ -125,25 +139,35 @@ public class EventsService {
         return eventsRep.changeEventParticipants(id, newParticipiants) == 1;
     }
 
-    public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, String type, Long duration, String description, String pathToThePicture){
-        Event event = new Event(name, ownerId, latitude, longitude, date, type, duration, description, pathToThePicture);
+    public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, String type,
+                         Long endTime, String description, String pathToThePicture, Long groupId){
+        Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, description, pathToThePicture, groupId);
         eventsRep.save(event);
         return event.getId();
     }
 
-    public PojoSmallEvent toEventForMap(Event event){
-        PojoSmallEvent pojoSmallEvent = new PojoSmallEvent(event);
-        return pojoSmallEvent;
+    public PojoMidEvent toEventForMap(Event event){
+        PojoMidEvent pojoMidEvent = new PojoMidEvent(event);
+        return pojoMidEvent;
     }
 
-    public PojoSmallEvents toPojoEventsForMap(List<Event> events){
-        List<PojoSmallEvent> listOfEventsForMap = new ArrayList<PojoSmallEvent>();
+    public PojoMidEvents toPojoEventsForMap(List<Event> events){
+        List<PojoMidEvent> listOfEventsForMap = new ArrayList<PojoMidEvent>();
         for (Event event : events) {
-            listOfEventsForMap.add(new PojoSmallEvent(event));
+            listOfEventsForMap.add(new PojoMidEvent(event));
         }
-        PojoSmallEvent[] pojoEventsForMap = new PojoSmallEvent[events.size()];
+        PojoMidEvent[] pojoEventsForMap = new PojoMidEvent[events.size()];
         pojoEventsForMap = listOfEventsForMap.toArray(pojoEventsForMap);
-        return new PojoSmallEvents(pojoEventsForMap);
+        return new PojoMidEvents(pojoEventsForMap);
     }
 
+    public PojoSmallEvents toSmallEvents(List<Event> events){
+        List<PojoSmallEvent> listOfSmallEvents = new ArrayList<PojoSmallEvent>();
+        for (Event event : events) {
+            listOfSmallEvents.add(new PojoSmallEvent(event));
+        }
+        PojoSmallEvent[] pojoSmallEvents = new PojoSmallEvent[events.size()];
+        pojoSmallEvents = listOfSmallEvents.toArray(pojoSmallEvents);
+        return new PojoSmallEvents(pojoSmallEvents);
+    }
 }

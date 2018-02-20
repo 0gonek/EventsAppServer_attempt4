@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver;
 
 import com.ogonek.eventsappserver.filter.CORSFilter;
+import com.ogonek.eventsappserver.service.DurationService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;

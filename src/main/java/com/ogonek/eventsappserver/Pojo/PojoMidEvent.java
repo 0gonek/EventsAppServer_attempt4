@@ -2,7 +2,7 @@ package com.ogonek.eventsappserver.Pojo;
 
 import com.ogonek.eventsappserver.entity.Event;
 
-public class PojoEvent {
+public class PojoMidEvent {
     private Long id;
     private String name;
     private Long ownerId;
@@ -10,17 +10,13 @@ public class PojoEvent {
     private Double longitude;
     private Long date;
     private Long duration;
-    private String description;
-    private String picture;
     private String type;
     private Long participants;
-    private Long groupId;
 
-    public PojoEvent() {
-    }
+    public PojoMidEvent(){}
 
-    public PojoEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
-                     String description, String picture, String type, Long participants, Long groupId) {
+    public PojoMidEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
+                        String type, Long participants) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -28,14 +24,11 @@ public class PojoEvent {
         this.longitude = longitude;
         this.date = date;
         this.duration = duration;
-        this.description = description;
-        this.picture = picture; //ДОДЕЛАТЬ!!
         this.type = type;
         this.participants = participants;
-        this.groupId = groupId;
     }
 
-    public PojoEvent(Event event){
+    public PojoMidEvent(Event event){
         this.id = event.getId();
         this.name = event.getName();
         this.ownerId = event.getOwnerId();
@@ -43,11 +36,8 @@ public class PojoEvent {
         this.longitude = event.getLongitude();
         this.date = event.getDate();
         this.duration = event.getEndTime() - event.getDate();
-        this.description = event.getDescription();
-        this.picture = event.getPathToThePicture(); //ДОДЕЛАТЬ!!
         this.type = event.getType();
         this.participants = event.getParticipants();
-        this.groupId = event.getGroupID();
     }
 
     public Long getId() {
@@ -106,22 +96,6 @@ public class PojoEvent {
         this.duration = duration;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
     public String getType() {
         return type;
     }
@@ -136,13 +110,5 @@ public class PojoEvent {
 
     public void setParticipants(Long participants) {
         this.participants = participants;
-    }
-
-    public Long getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(Long groupId) {
-        this.groupId = groupId;
     }
 }

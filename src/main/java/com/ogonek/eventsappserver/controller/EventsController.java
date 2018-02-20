@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.ogonek.eventsappserver.Pojo.PojoEvent;
+import com.ogonek.eventsappserver.Pojo.PojoMidEvents;
 import com.ogonek.eventsappserver.Pojo.PojoSmallEvents;
 import com.ogonek.eventsappserver.Pojo.PojoUsersList;
 import com.ogonek.eventsappserver.service.EventsService;
@@ -27,28 +28,6 @@ public class EventsController {
     @Autowired
     OwnerIdPairsService ownerIdPairsService;
 
-//    @RequestMapping(value = "/all", method = RequestMethod.GET)
-//    public @ResponseBody Iterable<Long> getAllEvents(){
-//        Iterable<Long> list = eventsService.getAllId();
-//        return list;
-//    }
-
-//    @RequestMapping(value = "/name/{name}", method = RequestMethod.GET)
-//    public List<Event> getByName(@PathVariable String name){
-//        return eventsService.getByName(name);
-//    }
-
-//    @RequestMapping(value = "/new", method = RequestMethod.POST)
-//    public @ResponseBody Iterable<Event> newEvent(@RequestParam("name") String name, @RequestParam("ownerId") String ownerId,
-//                                                  @RequestParam("latitude") Double latitude, @RequestParam("longitude") Double longitude,
-//                                                  @RequestParam("date") long date, @RequestParam("duration") long duration){
-//    public @ResponseBody Iterable<Event> newEvent(){
-//        //eventsService.addEvent(name, ownerId, latitude, longitude,date, duration, null, null);
-//        eventsService.addEvent("testName", 12L, 12D, 1200D,123L, 1234L, null, null);
-//        Iterable<Event> list = eventsService.getAll();
-//        return list;
-//    }
-
     @Modifying
     @RequestMapping(value = "/get", method = RequestMethod.GET)
     public PojoEvent getEvent(@RequestParam("id") Long userId, @RequestParam("token") String token,
@@ -60,30 +39,37 @@ public class EventsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/get_own", method = RequestMethod.GET)
-    public PojoSmallEvents getOwnEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
+    @RequestMapping(value = "/get_profile_events", method = RequestMethod.GET)
+    public PojoSmallEvents getOwnEvents(@RequestParam("type") int type, @RequestParam("id") Long userId, @RequestParam("token") String token){
         if(usersService.verifyToken(userId, token)) {
-            return eventsService.getOwnEvents(userId);
+            switch (type){
+                case 0:
+                    return eventsService.getOwnEvents(userId);
+                case 1:
+                    return eventsService.getPresentEvents(userId);
+            }
         }
         return null;
     }
 
     @Modifying
-    @RequestMapping(value = "/get_present", method = RequestMethod.GET)
-    public PojoSmallEvents getPresentEvents(@RequestParam("id") Long userId, @RequestParam("token") String token){
+    @RequestMapping(value = "/get_between", method = RequestMethod.GET)
+    public PojoMidEvents getEventsBetween(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                                          @RequestParam("minLatitude") double minLatitude, @RequestParam("maxLatitude") double maxLatitude,
+                                          @RequestParam("minLongitude") double minLongitude, @RequestParam("maxLongitude") double maxLongitude){
         if(usersService.verifyToken(userId, token)) {
-            return eventsService.getPresentEvents(userId);
+            return eventsService.getEventsBetween(minLatitude, maxLatitude, minLongitude, maxLongitude);
         }
         return null;
     }
 
     @Modifying
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public long changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
+    public long newEvent(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
         if(usersService.verifyToken(id, token)) {
             long eventId = eventsService.addEvent(pojoEvent.getName(), id, pojoEvent.getLatitude(),
-                    pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDuration(),
-                    pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR");
+                    pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDate()+pojoEvent.getDuration(),
+                    pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR", pojoEvent.getGroupId());
             idPairsService.addPair(id, eventId);
             ownerIdPairsService.addOwnerIdPair(id, eventId);
             return eventId;
@@ -93,7 +79,7 @@ public class EventsController {
 
     @Modifying
     @RequestMapping(value = "/new_perticipant", method = RequestMethod.GET)
-    public boolean changeUserName(@RequestParam("id") Long id, @RequestParam("token") String token,
+    public boolean newParticipiant(@RequestParam("id") Long id, @RequestParam("token") String token,
                                   @RequestParam("event_id") Long eventId){
         if(usersService.verifyToken(id, token)) {
             return idPairsService.addPair(id, eventId);
@@ -112,7 +98,7 @@ public class EventsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/participants", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_participants", method = RequestMethod.GET)
     public PojoUsersList getEventParticipants(@RequestParam("id") Long userId, @RequestParam("token") String token,
                                               @RequestParam("event_id") Long eventId){
         if(usersService.verifyToken(userId, token)) {
