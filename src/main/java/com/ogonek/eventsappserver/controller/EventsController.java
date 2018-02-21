@@ -55,7 +55,7 @@ public class EventsController {
                                              @RequestParam("min_lat") double minLatitude, @RequestParam("max_lat") double maxLatitude,
                                              @RequestParam("min_lon") double minLongitude, @RequestParam("max_lon") double maxLongitude){
         if(usersService.verifyToken(userId, token)) {
-            return eventsService.getEventsBetween(minLatitude, maxLatitude, minLongitude, maxLongitude);
+            return eventsService.getEventsBetween(userId, minLatitude, maxLatitude, minLongitude, maxLongitude);
         }
         return null;
     }
@@ -64,7 +64,7 @@ public class EventsController {
     @RequestMapping(value = "/get_between_public", method = RequestMethod.GET)
     public PojoEventsForMap getEventsBetweenPublic(@RequestParam("min_lat") double minLatitude, @RequestParam("max_lat") double maxLatitude,
                                              @RequestParam("min_lon") double minLongitude, @RequestParam("max_lon") double maxLongitude){
-        return eventsService.getEventsBetween(minLatitude, maxLatitude, minLongitude, maxLongitude);
+        return eventsService.getEventsBetween(null, minLatitude, maxLatitude, minLongitude, maxLongitude);
     }
 
     @Modifying
@@ -73,7 +73,7 @@ public class EventsController {
         if(usersService.verifyToken(id, token)) {
             long eventId = eventsService.addEvent(pojoEvent.getName(), id, pojoEvent.getLatitude(),
                     pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDate() + pojoEvent.getDuration(),
-                    pojoEvent.getPrivacy(), pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR", pojoEvent.getGroupId());
+                    pojoEvent.getPrivacy(), pojoEvent.getDescription(), pojoEvent.getPicture(), pojoEvent.getGroupId());
             idPairsService.addPair(id, eventId);
             ownerIdPairsService.addOwnerIdPair(id, eventId);
             return eventId;
@@ -82,7 +82,7 @@ public class EventsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/new_perticipant", method = RequestMethod.GET)
+    @RequestMapping(value = "/new_participant", method = RequestMethod.GET)
     public boolean newParticipiant(@RequestParam("id") Long id, @RequestParam("token") String token,
                                   @RequestParam("event_id") Long eventId){
         if(usersService.verifyToken(id, token)) {

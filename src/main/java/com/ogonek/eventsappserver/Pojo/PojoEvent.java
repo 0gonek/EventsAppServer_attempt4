@@ -12,7 +12,7 @@ public class PojoEvent {
     private Double longitude;
     private Long date;
     private Long duration;
-    private Boolean privacy;
+    private boolean privacy;
     private String description;
     private String picture;
     private Integer type;
@@ -49,7 +49,7 @@ public class PojoEvent {
         this.duration = event.getEndTime() - event.getDate();
         this.privacy = event.getPrivacy();
         this.description = event.getDescription();
-        this.picture = event.getPathToThePicture(); //ДОДЕЛАТЬ!!
+        this.picture = event.getPathToThePicture() + "Error"; //ДОДЕЛАТЬ!!
         this.type = event.getType();
         this.participants = event.getParticipants();
         this.groupId = event.getGroupID();
