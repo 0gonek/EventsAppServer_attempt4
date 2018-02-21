@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.ogonek.eventsappserver.Pojo.*;
+import com.ogonek.eventsappserver.entity.Event;
 import com.ogonek.eventsappserver.service.EventsService;
 import com.ogonek.eventsappserver.service.IdPairsService;
 import com.ogonek.eventsappserver.service.OwnerIdPairsService;
@@ -69,13 +70,14 @@ public class EventsController {
 
     @Modifying
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public long newEvent(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
-        if(usersService.verifyToken(id, token)) {
-            long eventId = eventsService.addEvent(pojoEvent.getName(), id, pojoEvent.getLatitude(),
-                    pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDate() + pojoEvent.getDuration(),
-                    pojoEvent.getPrivacy(), pojoEvent.getDescription(), pojoEvent.getPicture(), pojoEvent.getGroupId());
-            idPairsService.addPair(id, eventId);
-            ownerIdPairsService.addOwnerIdPair(id, eventId);
+    public long newEvent(@RequestBody PojoNewEvent pojoNewEvent){
+        if(usersService.verifyToken(pojoNewEvent.getOwnerId(), pojoNewEvent.getToken())) {
+            long eventId = eventsService.addEvent(pojoNewEvent.getName(), pojoNewEvent.getOwnerId(), pojoNewEvent.getLatitude(),
+                    pojoNewEvent.getLongitude(), pojoNewEvent.getDate(), pojoNewEvent.getType(),
+                    pojoNewEvent.getDate() + pojoNewEvent.getDuration(),
+                    pojoNewEvent.getPrivacy(), pojoNewEvent.getDescription(), pojoNewEvent.getPicture(), pojoNewEvent.getGroupId());
+            idPairsService.addPair(pojoNewEvent.getOwnerId(), eventId);
+            ownerIdPairsService.addOwnerIdPair(pojoNewEvent.getOwnerId(), eventId);
             return eventId;
         }
         return -1;
@@ -93,10 +95,10 @@ public class EventsController {
 
     @Modifying
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
-    public boolean deleteEvent(@RequestParam("id") Long userId, @RequestParam("token") String token,
+    public boolean deleteEvent(@RequestParam("id") Long id, @RequestParam("token") String token,
                                   @RequestParam("event_id") Long eventId){
-        if(usersService.verifyToken(userId, token)) {
-            return eventsService.deleteOwnEvent(userId, eventId);
+        if(usersService.verifyToken(id, token)) {
+            return eventsService.deleteOwnEvent(id, eventId);
         }
         return false;
     }
@@ -111,4 +113,12 @@ public class EventsController {
         return null;
     }
 
+    @Modifying
+    @RequestMapping(value = "/change_event", method = RequestMethod.POST)
+    public Boolean changeEvent(@RequestBody PojoChangeEvent pojoChangeEvent){
+        if(usersService.verifyToken(pojoChangeEvent.getOwnerId(), pojoChangeEvent.getToken())) {
+            return eventsService.changeEvent(pojoChangeEvent);
+        }
+        return null;
+    }
 }

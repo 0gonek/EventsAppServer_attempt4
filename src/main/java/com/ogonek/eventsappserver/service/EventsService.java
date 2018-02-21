@@ -138,6 +138,26 @@ public class EventsService {
         return new PojoSmallEvents(pojoSmallEvents);
     }
 
+    public boolean changeEvent(PojoChangeEvent pojoChangeEvent){
+        Event oldEvent = eventsRep.findById(pojoChangeEvent.getId());
+        if (oldEvent == null) return false;
+        if(pojoChangeEvent.getOwnerId() == oldEvent.getOwnerId()){
+            if(pojoChangeEvent.getDate() != oldEvent.getDate())
+                eventsRep.changeEventDate(oldEvent.getId(), pojoChangeEvent.getDate());
+            if(pojoChangeEvent.getDuration() != oldEvent.getEndTime()-oldEvent.getDate())
+                eventsRep.changeEventEndTime(oldEvent.getId(), oldEvent.getDate() + pojoChangeEvent.getDuration());
+            if(pojoChangeEvent.getLatitude() != oldEvent.getLatitude())
+                eventsRep.changeEventLatitude(oldEvent.getId(), pojoChangeEvent.getLatitude());
+            if(pojoChangeEvent.getLongitude() != oldEvent.getLongitude())
+                eventsRep.changeEventLongitude(oldEvent.getId(), pojoChangeEvent.getLongitude());
+            if(pojoChangeEvent.getDescription() != oldEvent.getDescription())
+                eventsRep.changeEventDescription(oldEvent.getId(), pojoChangeEvent.getDescription());
+            //ДОБАВИТЬ ФОТО
+            return true;
+        }
+        return false;
+    }
+
     public boolean deleteOld(long time){
         eventsRep.deleteAllByEndTimeGreaterThan(time);
         return true;

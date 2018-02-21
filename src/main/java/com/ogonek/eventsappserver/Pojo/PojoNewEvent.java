@@ -1,30 +1,40 @@
 package com.ogonek.eventsappserver.Pojo;
 
-public class PojoChangeEvent {
+public class PojoNewEvent {
+    private Long id;
+    private String name;
     private Long ownerId;
     private String token;
-    private Long id;
     private Double latitude;
     private Double longitude;
     private Long date;
     private Long duration;
+    private boolean privacy;
     private String description;
     private String picture;
+    private Integer type;
+    private Long participants;
+    private Long groupId;
 
-    public PojoChangeEvent() {
+    public PojoNewEvent() {
     }
 
-    public PojoChangeEvent(Long id, Long ownerId, String token, Double latitude, Double longitude, Long date,
-                           Long duration, String description, String picture) {
+    public PojoNewEvent(Long id, String name, Long ownerId, String token, Double latitude, Double longitude, Long date, Long duration,
+                     String description, String picture, Integer type, Long participants, Long groupId) {
+        this.id = id;
+        this.name = name;
         this.ownerId = ownerId;
         this.token = token;
-        this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
         this.duration = duration;
+        this.privacy = privacy;
         this.description = description;
-        this.picture = picture;
+        this.picture = picture; //ДОДЕЛАТЬ!!
+        this.type = type;
+        this.participants = participants;
+        this.groupId = groupId;
     }
 
     public Long getId() {
@@ -33,6 +43,14 @@ public class PojoChangeEvent {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Long getOwnerId() {
@@ -83,6 +101,14 @@ public class PojoChangeEvent {
         this.duration = duration;
     }
 
+    public boolean getPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(boolean privacy) {
+        this.privacy = privacy;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -97,5 +123,29 @@ public class PojoChangeEvent {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Long getParticipants() {
+        return participants;
+    }
+
+    public void setParticipants(Long participants) {
+        this.participants = participants;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 }

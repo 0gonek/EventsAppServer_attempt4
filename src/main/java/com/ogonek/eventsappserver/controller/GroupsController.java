@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.controller;
 
 import com.ogonek.eventsappserver.Pojo.PojoGroup;
+import com.ogonek.eventsappserver.Pojo.PojoNewGroup;
 import com.ogonek.eventsappserver.service.GroupUserPairsService;
 import com.ogonek.eventsappserver.service.GroupsService;
 import com.ogonek.eventsappserver.service.UsersService;
@@ -23,11 +24,11 @@ public class GroupsController {
 
     @Modifying
     @RequestMapping(value = "/new", method = RequestMethod.POST)
-    public long newGroup(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoGroup pojoGroup){
-        if(usersService.verifyToken(id, token)) {
-            long groupId = groupsService.addGroup(pojoGroup.getName(), id, pojoGroup.getPrivacy(), pojoGroup.getDescription(),
-                    pojoGroup.getPicture(), pojoGroup.getType());
-            groupUserPairsService.addGroupUserPair(id, groupId);
+    public long newGroup(@RequestBody PojoNewGroup pojoNewGroup){
+        if(usersService.verifyToken(pojoNewGroup.getOwnerId(), pojoNewGroup.getToken())) {
+            long groupId = groupsService.addGroup(pojoNewGroup.getName(), pojoNewGroup.getOwnerId(), pojoNewGroup.getPrivacy(), pojoNewGroup.getDescription(),
+                    pojoNewGroup.getPicture(), pojoNewGroup.getType());
+            groupUserPairsService.addGroupUserPair(pojoNewGroup.getOwnerId(), groupId);
             return groupId;
         }
         return -1;

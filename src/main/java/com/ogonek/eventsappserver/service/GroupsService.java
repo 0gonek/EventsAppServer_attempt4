@@ -1,6 +1,7 @@
 package com.ogonek.eventsappserver.service;
 
 import com.ogonek.eventsappserver.Pojo.PojoGroup;
+import com.ogonek.eventsappserver.Pojo.PojoNewGroup;
 import com.ogonek.eventsappserver.entity.Group;
 import com.ogonek.eventsappserver.repository.GroupUserPairsRep;
 import com.ogonek.eventsappserver.repository.GroupsRep;
