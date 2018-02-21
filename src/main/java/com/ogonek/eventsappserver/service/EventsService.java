@@ -10,6 +10,7 @@ import com.ogonek.eventsappserver.repository.OwnerIdPairsRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,10 +38,10 @@ public class EventsService {
         return pojoEvent;
     }
 
-    public PojoMidEvents getEventsBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
+    public PojoEventsForMap getEventsBetween(double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
         Date date = new Date();
         Long currentTime = date.getTime();
-        List<Event> events = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeGreaterThan(minLatitude,
+        List<Event> events = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeLessThan(minLatitude,
                 maxLatitude, minLongitude, maxLongitude, currentTime);
         List<Long> oldEventIds = new ArrayList<>();
         int n = events.size();
@@ -131,7 +132,7 @@ public class EventsService {
         return eventsRep.changeEventPathToThePicture(id, newPathToThePicture) == 1;
     }
 
-    public boolean changeEventType(long id, String newType){
+    public boolean changeEventType(long id, Integer newType){
         return eventsRep.changeEventType(id, newType) == 1;
     }
 
@@ -139,26 +140,21 @@ public class EventsService {
         return eventsRep.changeEventParticipants(id, newParticipiants) == 1;
     }
 
-    public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, String type,
-                         Long endTime, String description, String pathToThePicture, Long groupId){
-        Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, description, pathToThePicture, groupId);
+    public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, Integer type,
+                         Long endTime, Boolean privacy, String description, String pathToThePicture, Long groupId){
+        Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, privacy, description, pathToThePicture, groupId);
         eventsRep.save(event);
         return event.getId();
     }
 
-    public PojoMidEvent toEventForMap(Event event){
-        PojoMidEvent pojoMidEvent = new PojoMidEvent(event);
-        return pojoMidEvent;
-    }
-
-    public PojoMidEvents toPojoEventsForMap(List<Event> events){
-        List<PojoMidEvent> listOfEventsForMap = new ArrayList<PojoMidEvent>();
+    public PojoEventsForMap toPojoEventsForMap(List<Event> events){
+        List<PojoEventForMap> listOfEventsForMap = new ArrayList<PojoEventForMap>();
         for (Event event : events) {
-            listOfEventsForMap.add(new PojoMidEvent(event));
+            listOfEventsForMap.add(new PojoEventForMap(event));
         }
-        PojoMidEvent[] pojoEventsForMap = new PojoMidEvent[events.size()];
+        PojoEventForMap[] pojoEventsForMap = new PojoEventForMap[events.size()];
         pojoEventsForMap = listOfEventsForMap.toArray(pojoEventsForMap);
-        return new PojoMidEvents(pojoEventsForMap);
+        return new PojoEventsForMap(pojoEventsForMap);
     }
 
     public PojoSmallEvents toSmallEvents(List<Event> events){

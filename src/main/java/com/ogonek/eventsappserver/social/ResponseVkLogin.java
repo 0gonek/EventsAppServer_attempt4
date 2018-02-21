@@ -1,20 +1,20 @@
 package com.ogonek.eventsappserver.social;
 
 public class ResponseVkLogin {
-    private String uid;
+    private String id;
 
     private String first_name;
 
     private String last_name;
 
-    public String getUid ()
+    public String getId ()
     {
-        return uid;
+        return id;
     }
 
-    public void setUid (String uid)
+    public void setId (String id)
     {
-        this.uid = uid;
+        this.id = id;
     }
 
     public String getFirst_name ()
@@ -35,11 +35,5 @@ public class ResponseVkLogin {
     public void setLast_name (String last_name)
     {
         this.last_name = last_name;
-    }
-
-    @Override
-    public String toString()
-    {
-        return "ClassPojo [uid = "+uid+", first_name = "+first_name+", last_name = "+last_name+"]";
     }
 }

@@ -1,9 +1,6 @@
 package com.ogonek.eventsappserver.controller;
 
-import com.ogonek.eventsappserver.Pojo.PojoEvent;
-import com.ogonek.eventsappserver.Pojo.PojoMidEvents;
-import com.ogonek.eventsappserver.Pojo.PojoSmallEvents;
-import com.ogonek.eventsappserver.Pojo.PojoUsersList;
+import com.ogonek.eventsappserver.Pojo.*;
 import com.ogonek.eventsappserver.service.EventsService;
 import com.ogonek.eventsappserver.service.IdPairsService;
 import com.ogonek.eventsappserver.service.OwnerIdPairsService;
@@ -54,9 +51,9 @@ public class EventsController {
 
     @Modifying
     @RequestMapping(value = "/get_between", method = RequestMethod.GET)
-    public PojoMidEvents getEventsBetween(@RequestParam("id") Long userId, @RequestParam("token") String token,
-                                          @RequestParam("minLatitude") double minLatitude, @RequestParam("maxLatitude") double maxLatitude,
-                                          @RequestParam("minLongitude") double minLongitude, @RequestParam("maxLongitude") double maxLongitude){
+    public PojoEventsForMap getEventsBetween(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                                             @RequestParam("min_lat") double minLatitude, @RequestParam("max_lat") double maxLatitude,
+                                             @RequestParam("min_lon") double minLongitude, @RequestParam("max_lon") double maxLongitude){
         if(usersService.verifyToken(userId, token)) {
             return eventsService.getEventsBetween(minLatitude, maxLatitude, minLongitude, maxLongitude);
         }
@@ -64,12 +61,19 @@ public class EventsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/get_between_public", method = RequestMethod.GET)
+    public PojoEventsForMap getEventsBetweenPublic(@RequestParam("min_lat") double minLatitude, @RequestParam("max_lat") double maxLatitude,
+                                             @RequestParam("min_lon") double minLongitude, @RequestParam("max_lon") double maxLongitude){
+        return eventsService.getEventsBetween(minLatitude, maxLatitude, minLongitude, maxLongitude);
+    }
+
+    @Modifying
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public long newEvent(@RequestParam("id") Long id, @RequestParam("token") String token, @RequestBody PojoEvent pojoEvent){
         if(usersService.verifyToken(id, token)) {
             long eventId = eventsService.addEvent(pojoEvent.getName(), id, pojoEvent.getLatitude(),
-                    pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDate()+pojoEvent.getDuration(),
-                    pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR", pojoEvent.getGroupId());
+                    pojoEvent.getLongitude(), pojoEvent.getDate(), pojoEvent.getType(), pojoEvent.getDate() + pojoEvent.getDuration(),
+                    pojoEvent.getPrivacy(), pojoEvent.getDescription(), pojoEvent.getPicture() + "ERROR", pojoEvent.getGroupId());
             idPairsService.addPair(id, eventId);
             ownerIdPairsService.addOwnerIdPair(id, eventId);
             return eventId;

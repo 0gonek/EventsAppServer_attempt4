@@ -13,7 +13,7 @@ import java.util.List;
 public interface EventsRep extends JpaRepository<Event, Long> {
     Event findById (long id);
     List<Event> findAllByOwnerId (long id);
-    List<Event> findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeGreaterThan(double minLatitude,
+    List<Event> findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeLessThan(double minLatitude,
                                                                                                                             double maxLatitude,
                                                                                                                             double minLongitude,
                                                                                                                             double maxLongitude,
@@ -53,7 +53,7 @@ public interface EventsRep extends JpaRepository<Event, Long> {
     @Transactional
     @Modifying
     @Query("update Event e set e.type = ?2 where e.id = ?1")
-    int changeEventType(Long id, String type);
+    int changeEventType(Long id, Integer type);
     @Transactional
     @Modifying
     @Query("update Event e set e.participants = ?2 where e.id = ?1")

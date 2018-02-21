@@ -89,7 +89,7 @@ public class UsersService {
 
     public String getBigAvatarVK(long id){
         String url = "https://api.vk.com/method/users.get?user_ids=" + usersRep.findById(id).getIntegrationId()
-                + "&fields=photo_200";
+                + "&fields=photo_200" + "&v=5.8";
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -123,7 +123,7 @@ public class UsersService {
         for (int i = 1; i < n; i++) {
             url += "," + usersRep.findById(id[i]).getIntegrationId();
         }
-        url += "&fields=photo_50";
+        url += "&fields=photo_50" + "&v=5.8";
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -157,7 +157,7 @@ public class UsersService {
     }
 
     public PojoNameAndAvatar loginVK(String integrationid, String token) throws Exception{
-        String url = "https://api.vk.com/method/users.get?access_token=" + token;
+        String url = "https://api.vk.com/method/users.get?access_token=" + token + "&v=5.8";
 
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -175,7 +175,7 @@ public class UsersService {
         Gson gson = new Gson();
         try {
             UserVKLogin userVKLogin = gson.fromJson(response.toString(), UserVKLogin.class);
-            if (userVKLogin.getResponse()[0].getUid().equals(integrationid)) {
+            if (userVKLogin.getResponse()[0].getId().equals(integrationid)) {
                 try {
                     userId = findByIntegration(integrationid, "VK");
                 }

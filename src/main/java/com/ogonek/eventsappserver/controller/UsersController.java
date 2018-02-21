@@ -76,7 +76,8 @@ public class UsersController {
     @Modifying
     @RequestMapping(value = "/loginvk", method = RequestMethod.GET)
     public PojoNameAndAvatar loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("token") String token) throws Exception{
-        return usersService.loginVK(integrationid, token);
+        PojoNameAndAvatar pojoNameAndAvatar = usersService.loginVK(integrationid, token);
+        return pojoNameAndAvatar;
     }
 
     @Modifying

@@ -25,28 +25,32 @@ public class Event implements Serializable{
     private Long date;
     @Column(name = "endtime", nullable = false)
     private Long endTime;
+    @Column(name = "privacy", nullable = false)
+    private Boolean privacy;
     @Column(name = "description", nullable = true)
     private String description;
     @Column(name = "pathToThePicture", nullable = true)
     private String pathToThePicture;
     @Column(name = "Type", nullable = true)
-    private String type;
+    private Integer type;
     @Column(name = "Participants", nullable = true)
     private Long participants;
     @Column(name = "GroupID", nullable = true)
     private Long groupID;
 
+
     public Event(){
     }
 
-    public Event(String name, long ownerId, Double latitude, Double longitude, Long date, String type, Long endTime,
-                 String description, String pathToThePicture, Long groupID) {
+    public Event(String name, long ownerId, Double latitude, Double longitude, Long date, Integer type, Long endTime,
+                 boolean privacy, String description, String pathToThePicture, Long groupID) {
         this.name = name;
         this.ownerId = ownerId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.date = date;
         this.endTime = endTime;
+        this.privacy = privacy;
         this.description = description;
         this.pathToThePicture = pathToThePicture;
         this.type = type;
@@ -82,6 +86,10 @@ public class Event implements Serializable{
         return endTime;
     }
 
+    public Boolean getPrivacy() {
+        return privacy;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -90,7 +98,7 @@ public class Event implements Serializable{
         return pathToThePicture;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
     }
 
