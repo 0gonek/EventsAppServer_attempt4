@@ -119,6 +119,6 @@ public class EventsController {
         if(usersService.verifyToken(pojoChangeEvent.getOwnerId(), pojoChangeEvent.getToken())) {
             return eventsService.changeEvent(pojoChangeEvent);
         }
-        return null;
+        return false;
     }
 }

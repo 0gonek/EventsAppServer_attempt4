@@ -2,8 +2,6 @@ package com.ogonek.eventsappserver.Pojo;
 
 import com.ogonek.eventsappserver.entity.Event;
 
-import javax.persistence.criteria.CriteriaBuilder;
-
 public class PojoEvent {
     private Long id;
     private String name;
@@ -14,7 +12,7 @@ public class PojoEvent {
     private Long duration;
     private boolean privacy;
     private String description;
-    private String picture;
+    private String pathToThePicture;
     private Integer type;
     private Long participants;
     private Long groupId;
@@ -23,7 +21,7 @@ public class PojoEvent {
     }
 
     public PojoEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
-                     String description, String picture, Integer type, Long participants, Long groupId) {
+                     String description, String pathToThePicture, Integer type, Long participants, Long groupId) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -33,7 +31,7 @@ public class PojoEvent {
         this.duration = duration;
         this.privacy = privacy;
         this.description = description;
-        this.picture = picture; //ДОДЕЛАТЬ!!
+        this.pathToThePicture = pathToThePicture; //ДОДЕЛАТЬ!!
         this.type = type;
         this.participants = participants;
         this.groupId = groupId;
@@ -49,7 +47,7 @@ public class PojoEvent {
         this.duration = event.getEndTime() - event.getDate();
         this.privacy = event.getPrivacy();
         this.description = event.getDescription();
-        this.picture = event.getPathToThePicture() + "Error"; //ДОДЕЛАТЬ!!
+        this.pathToThePicture = event.getPathToThePicture() + "Error"; //ДОДЕЛАТЬ!!
         this.type = event.getType();
         this.participants = event.getParticipants();
         this.groupId = event.getGroupID();
@@ -127,12 +125,12 @@ public class PojoEvent {
         this.description = description;
     }
 
-    public String getPicture() {
-        return picture;
+    public String getPathToThePicture() {
+        return pathToThePicture;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
+    public void setPathToThePicture(String pathToThePicture) {
+        this.pathToThePicture = pathToThePicture;
     }
 
     public Integer getType() {

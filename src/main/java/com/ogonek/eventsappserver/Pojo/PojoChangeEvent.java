@@ -9,13 +9,13 @@ public class PojoChangeEvent {
     private Long date;
     private Long duration;
     private String description;
-    private String picture;
+    private boolean[] picture;
 
     public PojoChangeEvent() {
     }
 
     public PojoChangeEvent(Long id, Long ownerId, String token, Double latitude, Double longitude, Long date,
-                           Long duration, String description, String picture) {
+                           Long duration, String description, boolean[] picture) {
         this.ownerId = ownerId;
         this.token = token;
         this.id = id;
@@ -91,11 +91,11 @@ public class PojoChangeEvent {
         this.description = description;
     }
 
-    public String getPicture() {
+    public boolean[] getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(boolean[] picture) {
         this.picture = picture;
     }
 }

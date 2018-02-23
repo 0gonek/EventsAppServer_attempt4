@@ -111,9 +111,10 @@ public class EventsService {
     }
 
     public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, Integer type,
-                         Long endTime, Boolean privacy, String description, String picture, Long groupId){
+                         Long endTime, Boolean privacy, String description, boolean[] picture, Long groupId){
+        String pathToThePicture = "Error";
         //PICTURE!
-        Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, privacy, description, picture, groupId);
+        Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, privacy, description, pathToThePicture, groupId);
         eventsRep.save(event);
         return event.getId();
     }
@@ -142,17 +143,18 @@ public class EventsService {
         Event oldEvent = eventsRep.findById(pojoChangeEvent.getId());
         if (oldEvent == null) return false;
         if(pojoChangeEvent.getOwnerId() == oldEvent.getOwnerId()){
-            if(pojoChangeEvent.getDate() != oldEvent.getDate())
+            if(pojoChangeEvent.getDate() != null)
                 eventsRep.changeEventDate(oldEvent.getId(), pojoChangeEvent.getDate());
-            if(pojoChangeEvent.getDuration() != oldEvent.getEndTime()-oldEvent.getDate())
+            if(pojoChangeEvent.getDuration() != null)
                 eventsRep.changeEventEndTime(oldEvent.getId(), oldEvent.getDate() + pojoChangeEvent.getDuration());
-            if(pojoChangeEvent.getLatitude() != oldEvent.getLatitude())
+            if(pojoChangeEvent.getLatitude() != null)
                 eventsRep.changeEventLatitude(oldEvent.getId(), pojoChangeEvent.getLatitude());
-            if(pojoChangeEvent.getLongitude() != oldEvent.getLongitude())
+            if(pojoChangeEvent.getLongitude() != null)
                 eventsRep.changeEventLongitude(oldEvent.getId(), pojoChangeEvent.getLongitude());
-            if(pojoChangeEvent.getDescription() != oldEvent.getDescription())
+            if(pojoChangeEvent.getDescription() != null)
                 eventsRep.changeEventDescription(oldEvent.getId(), pojoChangeEvent.getDescription());
-            //ДОБАВИТЬ ФОТО
+            if(pojoChangeEvent.getPicture() != null)
+                eventsRep.changeEventPathToThePicture(oldEvent.getId(), "ChangedError");
             return true;
         }
         return false;
