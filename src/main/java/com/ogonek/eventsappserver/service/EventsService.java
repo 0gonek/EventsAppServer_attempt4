@@ -154,7 +154,7 @@ public class EventsService {
 
                 }
                 else{
-                    
+
                 }
             }
             return true;

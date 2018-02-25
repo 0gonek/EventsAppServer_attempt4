@@ -1,7 +1,6 @@
 package com.ogonek.eventsappserver.Pojo;
 
 public class PojoNewEvent {
-    private Long id;
     private String name;
     private Long ownerId;
     private String token;
@@ -19,9 +18,8 @@ public class PojoNewEvent {
     public PojoNewEvent() {
     }
 
-    public PojoNewEvent(Long id, String name, Long ownerId, String token, Double latitude, Double longitude, Long date, Long duration,
+    public PojoNewEvent(String name, Long ownerId, String token, Double latitude, Double longitude, Long date, Long duration,
                      String description, Byte[] picture, Integer type, Long participants, Long groupId) {
-        this.id = id;
         this.name = name;
         this.ownerId = ownerId;
         this.token = token;
@@ -35,14 +33,6 @@ public class PojoNewEvent {
         this.type = type;
         this.participants = participants;
         this.groupId = groupId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
