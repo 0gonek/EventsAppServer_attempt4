@@ -11,7 +11,7 @@ public class PojoNewEvent {
     private Long duration;
     private boolean privacy;
     private String description;
-    private boolean[] picture;
+    private Byte[] picture;
     private Integer type;
     private Long participants;
     private Long groupId;
@@ -20,7 +20,7 @@ public class PojoNewEvent {
     }
 
     public PojoNewEvent(Long id, String name, Long ownerId, String token, Double latitude, Double longitude, Long date, Long duration,
-                     String description, boolean[] picture, Integer type, Long participants, Long groupId) {
+                     String description, Byte[] picture, Integer type, Long participants, Long groupId) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -117,11 +117,11 @@ public class PojoNewEvent {
         this.description = description;
     }
 
-    public boolean[] getPicture() {
+    public Byte[] getPicture() {
         return picture;
     }
 
-        public void setPicture(boolean[] picture) {
+    public void setPicture(Byte[] picture) {
         this.picture = picture;
     }
 

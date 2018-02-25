@@ -111,7 +111,7 @@ public class EventsService {
     }
 
     public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, Integer type,
-                         Long endTime, Boolean privacy, String description, boolean[] picture, Long groupId){
+                         Long endTime, Boolean privacy, String description, Byte[] picture, Long groupId){
         String pathToThePicture = "Error";
         //PICTURE!
         Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, privacy, description, pathToThePicture, groupId);
@@ -143,18 +143,20 @@ public class EventsService {
         Event oldEvent = eventsRep.findById(pojoChangeEvent.getId());
         if (oldEvent == null) return false;
         if(pojoChangeEvent.getOwnerId() == oldEvent.getOwnerId()){
-            if(pojoChangeEvent.getDate() != null)
-                eventsRep.changeEventDate(oldEvent.getId(), pojoChangeEvent.getDate());
-            if(pojoChangeEvent.getDuration() != null)
-                eventsRep.changeEventEndTime(oldEvent.getId(), oldEvent.getDate() + pojoChangeEvent.getDuration());
-            if(pojoChangeEvent.getLatitude() != null)
-                eventsRep.changeEventLatitude(oldEvent.getId(), pojoChangeEvent.getLatitude());
-            if(pojoChangeEvent.getLongitude() != null)
-                eventsRep.changeEventLongitude(oldEvent.getId(), pojoChangeEvent.getLongitude());
-            if(pojoChangeEvent.getDescription() != null)
-                eventsRep.changeEventDescription(oldEvent.getId(), pojoChangeEvent.getDescription());
-            if(pojoChangeEvent.getPicture() != null)
-                eventsRep.changeEventPathToThePicture(oldEvent.getId(), "ChangedError");
+            eventsRep.changeEventDate(oldEvent.getId(), pojoChangeEvent.getDate());
+            eventsRep.changeEventEndTime(oldEvent.getId(), oldEvent.getDate() + pojoChangeEvent.getDuration());
+            eventsRep.changeEventLatitude(oldEvent.getId(), pojoChangeEvent.getLatitude());
+            eventsRep.changeEventLongitude(oldEvent.getId(), pojoChangeEvent.getLongitude());
+            eventsRep.changeEventDescription(oldEvent.getId(), pojoChangeEvent.getDescription());
+            eventsRep.changeEventPathToThePicture(oldEvent.getId(), "ChangedError");
+            if(pojoChangeEvent.getPicture() != null){
+                if(pojoChangeEvent.getPicture().length == 0){
+
+                }
+                else{
+                    
+                }
+            }
             return true;
         }
         return false;
