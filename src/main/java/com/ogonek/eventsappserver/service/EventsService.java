@@ -73,10 +73,13 @@ public class EventsService {
     public PojoSmallEvents findByName(String part, Long userId, Integer offset, Integer quantity){
         List<Event> events = eventsRep.findAllByNameContains(part);
         events = removeOldAndPrivate(events, new Date().getTime(), userId);
+        if(events.size() == 0) return null;
+        PojoSmallEvents pojoSmallEvents;
         if(events.size() - offset <= quantity)
-            return toSmallEvents(events.subList(offset, events.size()-1));
+            pojoSmallEvents = toSmallEvents(events.subList(offset, events.size()));
         else
-            return toSmallEvents(events.subList(offset, offset+quantity-1));
+            pojoSmallEvents = toSmallEvents(events.subList(offset, offset+quantity));
+        return pojoSmallEvents;
     }
 
     public boolean deleteOwnEvent(long userId, long eventId){

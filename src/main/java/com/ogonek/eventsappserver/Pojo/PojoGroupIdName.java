@@ -15,8 +15,8 @@ public class PojoGroupIdName {
     }
 
     public PojoGroupIdName(Group group){
-        this.id = id;
-        this.name = name;
+        this.id = group.getId();
+        this.name = group.getName();
     }
 
     public Long getId() {
