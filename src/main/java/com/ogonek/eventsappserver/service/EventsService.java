@@ -8,6 +8,7 @@ import com.ogonek.eventsappserver.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,36 +44,7 @@ public class EventsService {
         Long currentTime = date.getTime();
         List<Event> events = eventsRep.findByLatitudeGreaterThanAndLatitudeLessThanAndLongitudeGreaterThanAndLongitudeLessThanOrEndTimeLessThan(minLatitude,
                 maxLatitude, minLongitude, maxLongitude, currentTime);
-        List<Long> oldEventIds = new ArrayList<>();
-        int n = events.size();
-        Event event;
-        for (int i = 0; i < n; i++) {
-            event = events.get(i);
-            if(event.getEndTime() < currentTime){
-                oldEventIds.add(events.get(i).getId());
-                events.remove(i);
-                i--;
-                n--;
-            }
-            else{
-                if(event.getPrivacy()){
-                    if(userId == null || event.getGroupID() == null || groupUserPairsRep.findByUserIdAndGroupId(userId, event.getGroupID()) == null){
-                        events.remove(i);
-                        i--;
-                        n--;
-                    }
-                }
-            }
-        }
-        for (Long eventId:
-             oldEventIds) {
-            eventsRep.deleteById(eventId);
-            ownerIdPairsRep.deleteById(ownerIdPairsRep.findByEventId(eventId).getId());
-            List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
-            for (IdPair idPair:idPairs) {
-                idPairsRep.deleteById(idPair.getId());
-            }
-        }
+        events = removeOldAndPrivate(events, currentTime, userId);
         return toPojoEventsForMap(events);
     }
 
@@ -93,6 +65,12 @@ public class EventsService {
             eventsId.add(pair.getEventId());
         }
         List<Event> events = eventsRep.findAll(eventsId);
+        return toSmallEvents(events);
+    }
+
+    public PojoSmallEvents findByName(String part, Long userId){
+        List<Event> events = eventsRep.findAllByNameContains(part);
+        events = removeOldAndPrivate(events, new Date().getTime(), userId);
         return toSmallEvents(events);
     }
 
@@ -139,6 +117,40 @@ public class EventsService {
         return new PojoSmallEvents(pojoSmallEvents);
     }
 
+    private List<Event> removeOldAndPrivate(List<Event> events, Long currentTime, Long userId){
+        List<Long> oldEventIds = new ArrayList<>();
+        int n = events.size();
+        Event event;
+        for (int i = 0; i < n; i++) {
+            event = events.get(i);
+            if(event.getEndTime() < currentTime){
+                oldEventIds.add(events.get(i).getId());
+                events.remove(i);
+                i--;
+                n--;
+            }
+            else{
+                if(event.getPrivacy()){
+                    if(userId == null || event.getGroupID() == null || groupUserPairsRep.findByUserIdAndGroupId(userId, event.getGroupID()) == null){
+                        events.remove(i);
+                        i--;
+                        n--;
+                    }
+                }
+            }
+        }
+        for (Long eventId:
+                oldEventIds) {
+            eventsRep.deleteById(eventId);
+            ownerIdPairsRep.deleteById(ownerIdPairsRep.findByEventId(eventId).getId());
+            List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
+            for (IdPair idPair:idPairs) {
+                idPairsRep.deleteById(idPair.getId());
+            }
+        }
+        return events;
+    }
+
     public boolean changeEvent(PojoChangeEvent pojoChangeEvent){
         Event oldEvent = eventsRep.findById(pojoChangeEvent.getId());
         if (oldEvent == null) return false;
@@ -160,6 +172,20 @@ public class EventsService {
             return true;
         }
         return false;
+    }
+
+    public String savePicture(Long id, byte[] picture){
+        String directory = org.apache.commons.codec.digest.DigestUtils.sha256Hex(id.toString());
+        try {
+            try (FileOutputStream fos = new FileOutputStream(directory)) {
+                fos.write(picture);
+                fos.close();
+            }
+            return directory;
+        }
+        catch (Exception ex){
+            return null;
+        }
     }
 
     public boolean deleteOld(long time){

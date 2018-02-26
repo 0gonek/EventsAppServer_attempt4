@@ -8,6 +8,8 @@ import com.ogonek.eventsappserver.repository.GroupsRep;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class GroupsService {
 
@@ -29,4 +31,9 @@ public class GroupsService {
         PojoGroup pojoGroup = new PojoGroup(group);
         return pojoGroup;
     }
+
+//    public PojoGroup findByName(String part){
+//        List<Group> groups = groupsRep.findAllByNameContains(part);
+//        return null;
+//    }
 }

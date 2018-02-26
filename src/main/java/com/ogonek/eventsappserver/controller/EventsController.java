@@ -114,6 +114,16 @@ public class EventsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public PojoSmallEvents searchByName(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                                              @RequestParam("part") String part){
+        if(usersService.verifyToken(userId, token)) {
+            return eventsService.findByName(part, userId);
+        }
+        return null;
+    }
+
+    @Modifying
     @RequestMapping(value = "/change_event", method = RequestMethod.POST)
     public Boolean changeEvent(@RequestBody PojoChangeEvent pojoChangeEvent){
         if(usersService.verifyToken(pojoChangeEvent.getOwnerId(), pojoChangeEvent.getToken())) {

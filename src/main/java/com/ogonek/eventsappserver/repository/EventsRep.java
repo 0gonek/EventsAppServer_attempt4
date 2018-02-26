@@ -18,6 +18,7 @@ public interface EventsRep extends JpaRepository<Event, Long> {
                                                                                                                             double minLongitude,
                                                                                                                             double maxLongitude,
                                                                                                                             long currentTime);
+    List<Event> findAllByNameContains(String part);
     @Transactional
     void deleteById(long id);
     @Transactional
