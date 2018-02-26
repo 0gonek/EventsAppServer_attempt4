@@ -49,7 +49,7 @@ public class GroupsService {
 
     // CHECK INDEXES
 
-    public PojoSmallGroups FindByName(String part, Long userId, Integer offset, Integer quantity){
+    public PojoSmallGroups findByName(String part, Long userId, Integer offset, Integer quantity){
         List<Group> groups = groupsRep.findAllByNameContains(part);
         if(groups.size() - offset <= quantity)
             return toSmallGroups(groups.subList(offset, groups.size()-1));
@@ -60,7 +60,7 @@ public class GroupsService {
 
     // CHECK INDEXES
 
-    public PojoGroupIdNames GetSomeOwn(String part, Long userId, Integer offset, Integer quantity){
+    public PojoGroupIdNames getSomeOwn(String part, Long userId, Integer offset, Integer quantity){
         List<Group> groups = groupsRep.findAllByNameContains(part);
         if(groups.size() - offset <= quantity)
             return toGroupIdNames(groups.subList(offset, groups.size()-1));

@@ -124,7 +124,7 @@ public class EventsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/change_event", method = RequestMethod.POST)
+    @RequestMapping(value = "/change", method = RequestMethod.POST)
     public Boolean changeEvent(@RequestBody PojoChangeEvent pojoChangeEvent){
         if(usersService.verifyToken(pojoChangeEvent.getOwnerId(), pojoChangeEvent.getToken())) {
             return eventsService.changeEvent(pojoChangeEvent);

@@ -1,7 +1,6 @@
 package com.ogonek.eventsappserver.controller;
 
-import com.ogonek.eventsappserver.Pojo.PojoGroup;
-import com.ogonek.eventsappserver.Pojo.PojoNewGroup;
+import com.ogonek.eventsappserver.Pojo.*;
 import com.ogonek.eventsappserver.service.GroupUserPairsService;
 import com.ogonek.eventsappserver.service.GroupsService;
 import com.ogonek.eventsappserver.service.UsersService;
@@ -52,5 +51,27 @@ public class GroupsController {
             return groupUserPairsService.addGroupUserPair(id, groupId);
         }
         return false;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/search_own_groups", method = RequestMethod.GET)
+    public PojoGroupIdNames searchOwnGroups(@RequestParam("id") Long id, @RequestParam("token") String token,
+                                            @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
+                                            @RequestParam("quantity") Integer quantity) {
+        if(usersService.verifyToken(id, token)) {
+            return groupsService.getSomeOwn(keyWord, id, offset, quantity);
+        }
+        return null;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/search_groups", method = RequestMethod.GET)
+    public PojoSmallGroups searchGroups(@RequestParam("id") Long id, @RequestParam("token") String token,
+                                       @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
+                                       @RequestParam("quantity") Integer quantity) {
+        if(usersService.verifyToken(id, token)) {
+            return groupsService.findByName(keyWord, id, offset, quantity);
+        }
+        return null;
     }
 }
