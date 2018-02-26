@@ -14,6 +14,7 @@ public interface GroupsRep extends JpaRepository<Group, Long>{
     Group findById (long id);
     List<Group> findAllByOwnerId (long id);
     List<Group> findAllByNameContains(String part);
+    List<Group> findAllByNameContainsAndOwnerId(String part, long id);
 
     @Transactional
     void deleteById(long id);

@@ -118,7 +118,7 @@ public class EventsController {
     public PojoSmallEvents searchByName(@RequestParam("id") Long userId, @RequestParam("token") String token,
                                               @RequestParam("part") String part){
         if(usersService.verifyToken(userId, token)) {
-            return eventsService.findByName(part, userId);
+            return eventsService.findByName(part, userId, 0, 100);
         }
         return null;
     }

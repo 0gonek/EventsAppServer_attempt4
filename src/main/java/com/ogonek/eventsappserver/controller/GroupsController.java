@@ -43,4 +43,14 @@ public class GroupsController {
         }
         return null;
     }
+
+    @Modifying
+    @RequestMapping(value = "/new_participant", method = RequestMethod.GET)
+    public boolean newParticipiant(@RequestParam("id") Long id, @RequestParam("token") String token,
+                                   @RequestParam("group_id") Long groupId){
+        if(usersService.verifyToken(id, token)) {
+            return groupUserPairsService.addGroupUserPair(id, groupId);
+        }
+        return false;
+    }
 }
