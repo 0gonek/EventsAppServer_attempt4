@@ -54,7 +54,7 @@ public class GroupsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/search_own_groups", method = RequestMethod.GET)
+    @RequestMapping(value = "/search_own", method = RequestMethod.GET)
     public PojoGroupIdNames searchOwnGroups(@RequestParam("id") Long id, @RequestParam("token") String token,
                                             @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
                                             @RequestParam("quantity") Integer quantity) {
@@ -65,7 +65,7 @@ public class GroupsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/search_groups", method = RequestMethod.GET)
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
     public PojoSmallGroups searchGroups(@RequestParam("id") Long id, @RequestParam("token") String token,
                                        @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
                                        @RequestParam("quantity") Integer quantity) {
