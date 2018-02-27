@@ -113,6 +113,8 @@ public class EventsService {
                          Long endTime, Boolean privacy, String description, Byte[] picture, Long groupId){
         String pathToThePicture = "Error";
         //PICTURE!
+        if(groupUserPairsRep.findByUserIdAndGroupId(ownerId,groupId) == null)
+            return -1;
         Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, privacy, description, pathToThePicture, groupId);
         eventsRep.save(event);
         return event.getId();
