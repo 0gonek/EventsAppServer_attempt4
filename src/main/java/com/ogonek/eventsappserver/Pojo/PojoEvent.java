@@ -10,7 +10,7 @@ public class PojoEvent {
     private Double longitude;
     private Long date;
     private Long duration;
-    private boolean privacy;
+    private Boolean privacy;
     private String description;
     private String pathToThePicture;
     private Integer type;

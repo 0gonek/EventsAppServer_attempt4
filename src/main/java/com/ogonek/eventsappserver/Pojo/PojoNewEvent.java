@@ -8,7 +8,7 @@ public class PojoNewEvent {
     private Double longitude;
     private Long date;
     private Long duration;
-    private boolean privacy;
+    private Boolean privacy;
     private String description;
     private Byte[] picture;
     private Integer type;
