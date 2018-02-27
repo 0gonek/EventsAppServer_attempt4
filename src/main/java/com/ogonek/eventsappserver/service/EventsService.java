@@ -28,14 +28,27 @@ public class EventsService {
     @Autowired
     IdPairsRep idPairsRep;
 
+    @Autowired
+    GroupsRep groupsRep;
+
     public Iterable<Event> getAll() {
         Iterable<Event> iterable = eventsRep.findAll();
         return iterable;
     }
 
-    public PojoEvent getPojoEvent(long id){
-        Event event = eventsRep.findById(id);
-        PojoEvent pojoEvent = new PojoEvent(event);
+    public PojoEvent getPojoEvent(Long eventId, Long userId){
+        Event event = eventsRep.findById(eventId);
+        boolean isAccepted = false;
+        if(idPairsRep.findByUserIdAndEventId(userId, eventId) != null) isAccepted = true;
+        String groupName;
+        if(event.getGroupID() == null)
+            groupName = null;
+        else
+            groupName = groupsRep.findById(event.getGroupID()).getName();
+
+        PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), event.getOwnerId(), event.getLatitude(), event.getLongitude(),
+                event.getDate(), event.getEndTime()-event.getDate(), event.getPrivacy(), event.getDescription(), event.getPathToThePicture(),
+                event.getType(), event.getParticipants(), event.getGroupID(), isAccepted, groupName);
         return pojoEvent;
     }
 

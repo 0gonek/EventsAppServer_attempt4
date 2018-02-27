@@ -16,12 +16,15 @@ public class PojoEvent {
     private Integer type;
     private Long participants;
     private Long groupId;
+    private Boolean isAccepted;
+    private String groupName;
 
     public PojoEvent() {
     }
 
     public PojoEvent(Long id, String name, Long ownerId, Double latitude, Double longitude, Long date, Long duration,
-                     String description, String pathToThePicture, Integer type, Long participants, Long groupId) {
+                     Boolean privacy, String description, String pathToThePicture, Integer type, Long participants,
+                     Long groupId, Boolean isAccepted, String groupName) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -35,6 +38,8 @@ public class PojoEvent {
         this.type = type;
         this.participants = participants;
         this.groupId = groupId;
+        this.isAccepted = isAccepted;
+        this.groupName = groupName;
     }
 
     public PojoEvent(Event event){
@@ -155,5 +160,21 @@ public class PojoEvent {
 
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
+    }
+
+    public Boolean getAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        isAccepted = accepted;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 }

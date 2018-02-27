@@ -31,7 +31,7 @@ public class EventsController {
     public PojoEvent getEvent(@RequestParam("id") Long userId, @RequestParam("token") String token,
                                @RequestParam("event_id") Long eventId){
         if(usersService.verifyToken(userId, token)) {
-            return eventsService.getPojoEvent(eventId);
+            return eventsService.getPojoEvent(eventId, userId);
         }
         return null;
     }

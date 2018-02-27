@@ -12,14 +12,13 @@ public class PojoNewEvent {
     private String description;
     private Byte[] picture;
     private Integer type;
-    private Long participants;
     private Long groupId;
 
     public PojoNewEvent() {
     }
 
     public PojoNewEvent(String name, Long ownerId, String token, Double latitude, Double longitude, Long date, Long duration,
-                     String description, Byte[] picture, Integer type, Long participants, Long groupId) {
+                     String description, Byte[] picture, Integer type, Long groupId) {
         this.name = name;
         this.ownerId = ownerId;
         this.token = token;
@@ -31,7 +30,6 @@ public class PojoNewEvent {
         this.description = description;
         this.picture = picture; //ДОДЕЛАТЬ!!
         this.type = type;
-        this.participants = participants;
         this.groupId = groupId;
     }
 
@@ -121,14 +119,6 @@ public class PojoNewEvent {
 
     public void setType(Integer type) {
         this.type = type;
-    }
-
-    public Long getParticipants() {
-        return participants;
-    }
-
-    public void setParticipants(Long participants) {
-        this.participants = participants;
     }
 
     public Long getGroupId() {
