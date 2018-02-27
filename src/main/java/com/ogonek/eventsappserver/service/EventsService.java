@@ -182,6 +182,7 @@ public class EventsService {
             eventsRep.changeEventLongitude(oldEvent.getId(), pojoChangeEvent.getLongitude());
             eventsRep.changeEventDescription(oldEvent.getId(), pojoChangeEvent.getDescription());
             eventsRep.changeEventPathToThePicture(oldEvent.getId(), "ChangedError");
+            eventsRep.changeEventPrivacy(oldEvent.getId(), pojoChangeEvent.getPrivacy());
             if(pojoChangeEvent.getPicture() != null){
                 if(pojoChangeEvent.getPicture().length == 0){
 

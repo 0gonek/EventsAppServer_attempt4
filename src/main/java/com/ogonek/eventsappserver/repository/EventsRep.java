@@ -45,6 +45,10 @@ public interface EventsRep extends JpaRepository<Event, Long> {
     int changeEventEndTime(Long id, long endTime);
     @Transactional
     @Modifying
+    @Query("update Event e set e.privacy = ?2 where e.id = ?1")
+    int changeEventPrivacy(Long id, boolean privacy);
+    @Transactional
+    @Modifying
     @Query("update Event e set e.description = ?2 where e.id = ?1")
     int changeEventDescription(Long id, String description);
     @Transactional
