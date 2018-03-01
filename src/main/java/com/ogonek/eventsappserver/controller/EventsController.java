@@ -94,6 +94,17 @@ public class EventsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/delete_participant", method = RequestMethod.GET)
+    public boolean deleteParticipiant(@RequestParam("id") Long id, @RequestParam("token") String token,
+                                      @RequestParam("event_id") Long eventId,
+                                      @RequestParam("participant_id") Long participantId){
+        if(usersService.verifyToken(id, token)) {
+            return idPairsService.deleteIdPair(participantId, eventId, id);
+        }
+        return false;
+    }
+
+    @Modifying
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public boolean deleteEvent(@RequestParam("id") Long id, @RequestParam("token") String token,
                                   @RequestParam("event_id") Long eventId){

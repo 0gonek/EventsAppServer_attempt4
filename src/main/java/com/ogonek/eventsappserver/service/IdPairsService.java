@@ -94,9 +94,17 @@ public class IdPairsService {
         return pairs;
     }
 
-    public boolean deleteIdPair(long iD){
-        idPairsRep.deleteById(iD);
-        return true;
+    public boolean deleteIdPair(long userId, long eventId, long ownerId){
+        if(idPairsRep.findByUserIdAndEventId(userId,eventId) != null){
+            if(eventsRep.findById(eventId) == null) return false;
+            if(ownerId == userId || ownerId == eventsRep.findById(eventId).getOwnerId()){
+                idPairsRep.deleteById(idPairsRep.findByUserIdAndEventId(userId,eventId).getId());
+                Long participants = eventsRep.findById(eventId).getParticipants();
+                eventsRep.changeEventParticipants(eventId, participants - 1);
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<PojoNameAndAvatar> getNamesAndAvatars(long eventId){
