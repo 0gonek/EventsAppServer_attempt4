@@ -37,14 +37,17 @@ public class EventsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/get_publc", method = RequestMethod.GET)
+    public PojoEvent getEventPublic(@RequestParam("event_id") Long eventId){
+        return eventsService.getPojoEventPublic(eventId);
+
+    }
+
+    @Modifying
     @RequestMapping(value = "/get_picture",produces = {"image/jpeg"}, method = RequestMethod.GET)
-    public @ResponseBody byte[] getPicture(@RequestParam("id") Long userId, @RequestParam("token") String token,
-                              @RequestParam("directory") String directory){
-        if(usersService.verifyToken(userId, token)) {
-            byte[] picture = eventsService.getPicture(directory);
-            return picture;
-        }
-        return null;
+    public @ResponseBody byte[] getPicture(@RequestParam("path") String directory){
+        byte[] picture = eventsService.getPicture(directory);
+        return picture;
     }
 
     @Modifying

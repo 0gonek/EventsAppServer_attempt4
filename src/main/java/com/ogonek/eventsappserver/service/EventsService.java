@@ -41,6 +41,7 @@ public class EventsService {
 
     public PojoEvent getPojoEvent(Long eventId, Long userId){
         Event event = eventsRep.findById(eventId);
+        if(event == null) return null;
         boolean isAccepted = false;
         if(idPairsRep.findByUserIdAndEventId(userId, eventId) != null) isAccepted = true;
         String groupName;
@@ -52,6 +53,23 @@ public class EventsService {
         PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), event.getOwnerId(), event.getLatitude(), event.getLongitude(),
                 event.getDate(), event.getEndTime()-event.getDate(), event.getPrivacy(), event.getDescription(), event.getPathToThePicture(),
                 event.getType(), event.getParticipants(), event.getGroupID(), isAccepted, groupName);
+        return pojoEvent;
+    }
+
+    public PojoEvent getPojoEventPublic(Long eventId){
+        Event event = eventsRep.findById(eventId);
+        if(event == null) return null;
+        if(event.getPrivacy() == true)
+            return null;
+        String groupName;
+        if(event.getGroupID() == null)
+            groupName = null;
+        else
+            groupName = groupsRep.findById(event.getGroupID()).getName();
+
+        PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), null, null, null,
+                event.getDate(), null, null, null, event.getPathToThePicture(),
+                event.getType(), null, null, null, groupName);
         return pojoEvent;
     }
 
