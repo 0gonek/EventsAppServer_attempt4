@@ -8,6 +8,9 @@ import com.ogonek.eventsappserver.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,7 +113,7 @@ public class EventsService {
     }
 
     public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, Integer type,
-                         Long endTime, Boolean privacy, String description, Byte[] picture, Long groupId){
+                         Long endTime, Boolean privacy, String description, byte[] picture, Long groupId){
         String pathToThePicture = "Error";
         //PICTURE!
         if(groupId != null) {
@@ -119,6 +122,8 @@ public class EventsService {
         }
         Event event = new Event(name, ownerId, latitude, longitude, date, type, endTime, privacy, description, pathToThePicture, groupId);
         eventsRep.save(event);
+        String path = savePicture(event.getId(), picture);
+        eventsRep.changeEventPathToThePicture(event.getId(), path);
         return event.getId();
     }
 
@@ -189,10 +194,11 @@ public class EventsService {
             eventsRep.changeEventPrivacy(oldEvent.getId(), pojoChangeEvent.getPrivacy());
             if(pojoChangeEvent.getPicture() != null){
                 if(pojoChangeEvent.getPicture().length == 0){
-
+                    eventsRep.changeEventPathToThePicture(oldEvent.getId(), null);
                 }
                 else{
-
+                    String path = savePicture(oldEvent.getId(), pojoChangeEvent.getPicture());
+                    eventsRep.changeEventPathToThePicture(oldEvent.getId(), path);
                 }
             }
             return true;
@@ -210,6 +216,25 @@ public class EventsService {
             return directory;
         }
         catch (Exception ex){
+            return null;
+        }
+    }
+
+    public byte[]  getPicture(String dirrectory){
+        File imgPath = new File(dirrectory);
+        byte[] buffer = new byte[1024];
+
+        try {
+            ByteArrayOutputStream sout = new ByteArrayOutputStream();
+            FileInputStream fin = new FileInputStream(imgPath);
+            int read;
+            while ((read = fin.read(buffer)) != -1) {
+                sout.write(buffer, 0, read);
+            }
+            sout.close();
+            fin.close();
+            return sout.toByteArray();
+        }catch (Exception ex){
             return null;
         }
     }

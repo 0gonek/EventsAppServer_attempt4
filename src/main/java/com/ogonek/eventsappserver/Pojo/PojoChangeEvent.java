@@ -10,13 +10,13 @@ public class PojoChangeEvent {
     private Long duration;
     private Boolean privacy;
     private String description;
-    private Byte[] picture;
+    private byte[] picture;
 
     public PojoChangeEvent() {
     }
 
     public PojoChangeEvent(Long id, Long ownerId, String token, Double latitude, Double longitude, Long date,
-                           Long duration, Boolean privacy, String description, Byte[] picture) {
+                           Long duration, Boolean privacy, String description, byte[] picture) {
         this.ownerId = ownerId;
         this.token = token;
         this.id = id;
@@ -93,11 +93,11 @@ public class PojoChangeEvent {
         this.description = description;
     }
 
-    public Byte[] getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(Byte[] picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 

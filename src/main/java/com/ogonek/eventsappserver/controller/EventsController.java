@@ -37,6 +37,16 @@ public class EventsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/get_picture", method = RequestMethod.GET)
+    public @ResponseBody byte[] getPicture(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                              @RequestParam("dirrectory") String dirrectory){
+        if(usersService.verifyToken(userId, token)) {
+            return eventsService.getPicture(dirrectory);
+        }
+        return null;
+    }
+
+    @Modifying
     @RequestMapping(value = "/get_profile_events", method = RequestMethod.GET)
     public PojoSmallEvents getOwnEvents(@RequestParam("type") int type, @RequestParam("id") Long userId, @RequestParam("token") String token){
         if(usersService.verifyToken(userId, token)) {
