@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -59,27 +60,18 @@ public class GroupsService {
             pojoSmallGroups = toSmallGroups(groups.subList(offset, offset+quantity));
         return pojoSmallGroups;
     }
-//
-//    public PojoGroupIdNames getOwn(Long userId){
-//        List<GroupUserPair> groupIds = groupUserPairsRep.findAllByUserId(userId);
-//        for (GroupUserPair pairs:
-//             ) {
-//
-//        }
-//        List<Group> groups = groupsRep.findAllByNameContains(part);
-//        for (Group group:groups
-//                ) {
-//            if(groupUserPairsRep.findByUserIdAndGroupId(userId, group.getId()) == null)
-//                groups.remove(group);
-//        }
-//        if(groups.size() == 0) return null;
-//        PojoGroupIdNames pojoGroupIdNames;
-//        if(groups.size() - offset <= quantity)
-//            pojoGroupIdNames = toGroupIdNames(groups.subList(offset, groups.size()));
-//        else
-//            pojoGroupIdNames = toGroupIdNames(groups.subList(offset, offset+quantity));
-//        return pojoGroupIdNames;
-//    }
+
+    public PojoGroupIdNames getOwn(Long userId){
+        List<GroupUserPair> groupIds = groupUserPairsRep.findAllByUserId(userId);
+        List<Group> groups = new ArrayList<>();
+        for (GroupUserPair pair:groupIds
+             ) {
+            groups.add(groupsRep.findById(pair.getGroupId()));
+        }
+        if(groups.size() == 0) return null;
+        PojoGroupIdNames pojoGroupIdNames = toGroupIdNames(groups);
+        return pojoGroupIdNames;
+    }
 
     // CHECK INDEXES
 

@@ -37,7 +37,7 @@ public class EventsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/get_picture", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_picture",produces = {"image/jpeg"}, method = RequestMethod.GET)
     public @ResponseBody byte[] getPicture(@RequestParam("id") Long userId, @RequestParam("token") String token,
                               @RequestParam("directory") String directory){
         if(usersService.verifyToken(userId, token)) {

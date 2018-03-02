@@ -249,7 +249,7 @@ public class EventsService {
     }
 
     public byte[]  getPicture(String dirrectory){
-        File imgPath = new File("pictures" + dirrectory);
+        File imgPath = new File("pictures/" + dirrectory);
         byte[] buffer = new byte[1024];
 
         try {
