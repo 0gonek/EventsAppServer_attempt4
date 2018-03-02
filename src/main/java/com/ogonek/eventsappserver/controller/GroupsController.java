@@ -59,7 +59,7 @@ public class GroupsController {
                                             @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
                                             @RequestParam("quantity") Integer quantity) {
         if(usersService.verifyToken(id, token)) {
-            return groupsService.getSomeOwn(keyWord, id, offset, quantity);
+            return groupsService.findSomeOwn(keyWord, id, offset, quantity);
         }
         return null;
     }
