@@ -5,13 +5,13 @@ public class PojoChangeGroup {
     private Long ownerId;
     private String token;
     private String description;
-    private String picture;
+    private byte[] picture;
     private Integer type;
 
     public PojoChangeGroup() {
     }
 
-    public PojoChangeGroup(Long id, Long ownerId, String token, String description, String picture, Integer type) {
+    public PojoChangeGroup(Long id, Long ownerId, String token, String description, byte[] picture, Integer type) {
         this.id = id;
         this.ownerId = ownerId;
         this.token = token;
@@ -52,11 +52,11 @@ public class PojoChangeGroup {
         this.description = description;
     }
 
-    public String getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 

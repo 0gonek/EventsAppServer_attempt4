@@ -6,13 +6,13 @@ public class PojoNewGroup {
     private String token;
     private Boolean privacy;
     private String description;
-    private String picture;
+    private byte[] picture;
     private Integer type;
 
     public PojoNewGroup() {
     }
 
-    public PojoNewGroup(String name, Long ownerId, String token, Boolean privacy, String description, String picture, Integer type) {
+    public PojoNewGroup(String name, Long ownerId, String token, Boolean privacy, String description, byte[] picture, Integer type) {
         this.name = name;
         this.ownerId = ownerId;
         this.token = token;
@@ -62,11 +62,11 @@ public class PojoNewGroup {
         this.description = description;
     }
 
-    public String getPicture() {
+    public byte[] getPicture() {
         return picture;
     }
 
-    public void setPicture(String picture) {
+    public void setPicture(byte[] picture) {
         this.picture = picture;
     }
 

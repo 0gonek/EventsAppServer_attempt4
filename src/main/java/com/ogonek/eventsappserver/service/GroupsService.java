@@ -21,12 +21,37 @@ public class GroupsService {
     @Autowired
     GroupUserPairsRep groupUserPairsRep;
 
-    public Long addGroup(String name, Long ownerId, Boolean privacy, String description, String picture,
+    @Autowired
+    EventsService eventsService;
+
+    public Long addGroup(String name, Long ownerId, Boolean privacy, String description, byte[] picture,
                          Integer type){
         String pathToThePicture = "Error";
         Group group = new Group(name, ownerId, privacy, description, pathToThePicture, type);
         groupsRep.save(group);
+        String path = eventsService.savePicture(group.getId(), picture);
+        groupsRep.changeGroupPathToThePicture(group.getId(), path);
         return group.getId();
+    }
+
+    public boolean ChangeGroup(PojoChangeGroup pojoChangeGroup){
+        Group oldGroup = groupsRep.findById(pojoChangeGroup.getId());
+        if(oldGroup == null) return false;
+        if(pojoChangeGroup.getOwnerId() == oldGroup.getOwnerId()){
+            groupsRep.changeGroupDescription(oldGroup.getId(), pojoChangeGroup.getDescription());
+            groupsRep.changeGroupType(oldGroup.getId(), pojoChangeGroup.getType());
+            if(pojoChangeGroup.getPicture() != null){
+                if(pojoChangeGroup.getPicture().length == 0){
+                    groupsRep.changeGroupPathToThePicture(oldGroup.getId(), null);
+                }
+                else{
+                    String path = eventsService.savePicture(oldGroup.getId(), pojoChangeGroup.getPicture());
+                    groupsRep.changeGroupPathToThePicture(oldGroup.getId(), path);
+                }
+            }
+            return true;
+        }
+        return false;
     }
 
     public boolean deleteOwnGroup(long userId, long groupId){
