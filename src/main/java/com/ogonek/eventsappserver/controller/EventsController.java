@@ -67,7 +67,7 @@ public class EventsController {
         if(usersService.verifyToken(userId, token)) {
             switch (type){
                 case 0:
-                    return eventsService.getBigPresentEvents(userId);
+                    return eventsService.getBigPresentEvents(userId); 
             }
         }
         return null;
