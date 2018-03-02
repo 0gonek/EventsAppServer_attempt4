@@ -61,6 +61,18 @@ public class EventsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/get_big_profile_events", method = RequestMethod.GET)
+    public PojoEvents getBigOwnEvents(@RequestParam("type") int type, @RequestParam("id") Long userId, @RequestParam("token") String token){
+        if(usersService.verifyToken(userId, token)) {
+            switch (type){
+                case 0:
+                    return eventsService.getBigPresentEvents(userId);
+            }
+        }
+        return null;
+    }
+
+    @Modifying
     @RequestMapping(value = "/get_between", method = RequestMethod.GET)
     public PojoEventsForMap getEventsBetween(@RequestParam("id") Long userId, @RequestParam("token") String token,
                                              @RequestParam("min_lat") double minLatitude, @RequestParam("max_lat") double maxLatitude,

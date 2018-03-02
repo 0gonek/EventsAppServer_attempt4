@@ -64,6 +64,20 @@ public class EventsService {
         return toPojoEventsForMap(events);
     }
 
+    public PojoEvents getBigPresentEvents(long userId){
+        List<IdPair> pairs = idPairsRep.findAllByUserId(userId);
+        List<Long> eventsId = new ArrayList<>();
+        for (IdPair pair : pairs) {
+            eventsId.add(pair.getEventId());
+        }
+        List<Event> events = eventsRep.findAll(eventsId);
+        PojoEvent[] arr = new PojoEvent[events.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = new PojoEvent(events.get(i));
+        }
+        return new PojoEvents(arr);
+    }
+
     public PojoSmallEvents getOwnEvents(long ownerId){
         List<OwnerIdPair> pairs = ownerIdPairsRep.findAllByOwnerId(ownerId);
         List<Long> eventsId = new ArrayList<>();
@@ -209,7 +223,7 @@ public class EventsService {
     public String savePicture(Long id, byte[] picture){
         String directory = org.apache.commons.codec.digest.DigestUtils.sha256Hex(id.toString());
         try {
-            try (FileOutputStream fos = new FileOutputStream(directory)) {
+            try (FileOutputStream fos = new FileOutputStream("pictures/" + directory)) {
                 fos.write(picture);
                 fos.close();
             }
@@ -221,7 +235,7 @@ public class EventsService {
     }
 
     public byte[]  getPicture(String dirrectory){
-        File imgPath = new File(dirrectory);
+        File imgPath = new File("pictures" + dirrectory);
         byte[] buffer = new byte[1024];
 
         try {

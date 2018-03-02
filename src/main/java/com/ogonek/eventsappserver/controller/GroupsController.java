@@ -70,7 +70,7 @@ public class GroupsController {
                                        @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
                                        @RequestParam("quantity") Integer quantity) {
         if(usersService.verifyToken(id, token)) {
-            return groupsService.findByName(keyWord, id, offset, quantity);
+            return groupsService.findByName(keyWord, offset, quantity);
         }
         return null;
     }

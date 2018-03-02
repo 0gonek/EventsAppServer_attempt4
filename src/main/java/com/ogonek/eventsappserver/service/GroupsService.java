@@ -47,9 +47,11 @@ public class GroupsService {
         return pojoGroup;
     }
 
+
+
     // CHECK INDEXES
 
-    public PojoSmallGroups findByName(String part, Long userId, Integer offset, Integer quantity){
+    public PojoSmallGroups findByName(String part, Integer offset, Integer quantity){
         List<Group> groups = groupsRep.findAllByNameContains(part);
         if(groups.size() == 0) return null;
         PojoSmallGroups pojoSmallGroups;
@@ -65,6 +67,11 @@ public class GroupsService {
 
     public PojoGroupIdNames getSomeOwn(String part, Long userId, Integer offset, Integer quantity){
         List<Group> groups = groupsRep.findAllByNameContains(part);
+        for (Group group:groups
+             ) {
+            if(groupUserPairsRep.findByUserIdAndGroupId(userId, group.getId()) == null)
+                groups.remove(group);
+        }
         if(groups.size() == 0) return null;
         PojoGroupIdNames pojoGroupIdNames;
         if(groups.size() - offset <= quantity)
@@ -73,6 +80,8 @@ public class GroupsService {
             pojoGroupIdNames = toGroupIdNames(groups.subList(offset, offset+quantity));
         return pojoGroupIdNames;
     }
+
+    //public PojoGroupIdNames getOwn(Long)
 
     private PojoSmallGroups toSmallGroups(List<Group> groups){
         List<PojoSmallGroup> listOsSmallGroups = new ArrayList<PojoSmallGroup>();
