@@ -78,6 +78,20 @@ public class EventsService {
         return new PojoEvents(arr);
     }
 
+    public PojoEvents getBigOwnEvents(long ownerId){
+        List<OwnerIdPair> pairs = ownerIdPairsRep.findAllByOwnerId(ownerId);
+        List<Long> eventsId = new ArrayList<>();
+        for (OwnerIdPair pair : pairs) {
+            eventsId.add(pair.getEventId());
+        }
+        List<Event> events = eventsRep.findAll(eventsId);
+        PojoEvent[] arr = new PojoEvent[events.size()];
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = new PojoEvent(events.get(i));
+        }
+        return new PojoEvents(arr);
+    }
+
     public PojoSmallEvents getOwnEvents(long ownerId){
         List<OwnerIdPair> pairs = ownerIdPairsRep.findAllByOwnerId(ownerId);
         List<Long> eventsId = new ArrayList<>();
