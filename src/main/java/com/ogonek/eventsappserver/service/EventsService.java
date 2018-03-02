@@ -209,7 +209,7 @@ public class EventsService {
     public String savePicture(Long id, byte[] picture){
         String directory = org.apache.commons.codec.digest.DigestUtils.sha256Hex(id.toString());
         try {
-            try (FileOutputStream fos = new FileOutputStream(directory)) {
+            try (FileOutputStream fos = new FileOutputStream("pictures/" + directory)) {
                 fos.write(picture);
                 fos.close();
             }
@@ -221,7 +221,7 @@ public class EventsService {
     }
 
     public byte[]  getPicture(String dirrectory){
-        File imgPath = new File(dirrectory);
+        File imgPath = new File("pictures/" + dirrectory);
         byte[] buffer = new byte[1024];
 
         try {
