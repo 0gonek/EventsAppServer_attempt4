@@ -233,7 +233,8 @@ public class EventsService {
             }
             sout.close();
             fin.close();
-            return sout.toByteArray();
+            byte[] output = sout.toByteArray();
+            return output;
         }catch (Exception ex){
             return null;
         }

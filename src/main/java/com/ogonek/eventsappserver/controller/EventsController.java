@@ -41,7 +41,8 @@ public class EventsController {
     public @ResponseBody byte[] getPicture(@RequestParam("id") Long userId, @RequestParam("token") String token,
                               @RequestParam("dirrectory") String dirrectory){
         if(usersService.verifyToken(userId, token)) {
-            return eventsService.getPicture(dirrectory);
+            byte[] picture = eventsService.getPicture(dirrectory);
+            return picture;
         }
         return null;
     }
