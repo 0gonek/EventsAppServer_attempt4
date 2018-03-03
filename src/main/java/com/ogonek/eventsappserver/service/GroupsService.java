@@ -94,7 +94,7 @@ public class GroupsService {
              ) {
             groups.add(groupsRep.findById(pair.getGroupId()));
         }
-        if(groups.size() == 0) return null;
+        if(groups.size() == 0) return new PojoGroupIdNames(new PojoGroupIdName[0]);
         PojoGroupIdNames pojoGroupIdNames = toGroupIdNames(groups);
         return pojoGroupIdNames;
     }
