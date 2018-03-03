@@ -162,7 +162,7 @@ public class EventsService {
                          Long endTime, Boolean privacy, String description, byte[] picture, Long groupId){
         String pathToThePicture = "Error";
         //PICTURE!
-        if(groupId != null) {
+        if(groupId != null && groupId != 0) {
             if (groupUserPairsRep.findByUserIdAndGroupId(ownerId, groupId) == null)
                 return -1;
         }
