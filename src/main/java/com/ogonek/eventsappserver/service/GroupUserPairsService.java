@@ -39,6 +39,19 @@ public class GroupUserPairsService {
         return false;
     }
 
+    public boolean deleteIdPair(long userId, long groupId, long ownerId){
+        if(groupUserPairsRep.findByUserIdAndGroupId(userId,groupId) != null){
+            if(groupsRep.findById(groupId) == null) return false;
+            if(ownerId == userId || ownerId == groupsRep.findById(groupId).getOwnerId()){
+                groupUserPairsRep.deleteById(groupUserPairsRep.findByUserIdAndGroupId(userId,groupId).getId());
+                Long participants = groupsRep.findById(groupId).getParticipants();
+                groupsRep.changeGroupParticipants(groupId, participants - 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public PojoUsersList getUsersByGroupId(long groupId) {
         List<GroupUserPair> groupUserPairs = groupUserPairsRep.findAllByGroupId(groupId);
         if(groupUserPairs.size() == 0) return null;

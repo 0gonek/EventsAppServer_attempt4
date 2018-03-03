@@ -73,6 +73,27 @@ public class GroupsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/delete_participant", method = RequestMethod.GET)
+    public boolean deleteParticipiant(@RequestParam("id") Long id, @RequestParam("token") String token,
+                                      @RequestParam("group_id") Long groupId,
+                                      @RequestParam("participant_id") Long participantId){
+        if(usersService.verifyToken(id, token)) {
+            return groupUserPairsService.deleteIdPair(participantId, groupId, id);
+        }
+        return false;
+    }
+
+    @Modifying
+    @RequestMapping(value = "/get_participants", method = RequestMethod.GET)
+    public PojoUsersList getGroupParticipants(@RequestParam("id") Long userId, @RequestParam("token") String token,
+                                              @RequestParam("group_id") Long groupId){
+        if(usersService.verifyToken(userId, token)) {
+            return groupUserPairsService.getUsersByGroupId(groupId);
+        }
+        return null;
+    }
+
+    @Modifying
     @RequestMapping(value = "/get_own", method = RequestMethod.GET)
     public PojoGroupIdNames getOwn(@RequestParam("id") Long id, @RequestParam("token") String token){
         if(usersService.verifyToken(id, token)) {
