@@ -34,6 +34,15 @@ public class GroupsController {
     }
 
     @Modifying
+    @RequestMapping(value = "/change", method = RequestMethod.POST)
+    public Boolean changeGroup(@RequestBody PojoChangeGroup pojoChangeGroup){
+        if(usersService.verifyToken(pojoChangeGroup.getOwnerId(), pojoChangeGroup.getToken())) {
+            return groupsService.ChangeGroup(pojoChangeGroup);
+        }
+        return false;
+    }
+
+    @Modifying
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public boolean deleteGroup(@RequestParam("id") Long id, @RequestParam("token") String token,
                                    @RequestParam("group_id") Long groupId){
@@ -48,7 +57,7 @@ public class GroupsController {
     public PojoGroup getGroup(@RequestParam("id") Long userId, @RequestParam("token") String token,
                               @RequestParam("group_id") Long group_id){
         if(usersService.verifyToken(userId, token)) {
-            return groupsService.getPojoGroup(group_id);
+            return groupsService.getPojoGroup(group_id, userId);
         }
         return null;
     }

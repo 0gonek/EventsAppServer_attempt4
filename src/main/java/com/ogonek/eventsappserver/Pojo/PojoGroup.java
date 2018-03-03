@@ -11,11 +11,12 @@ public class PojoGroup {
     private String picture;
     private Integer type;
     private Long participants;
+    private Boolean isAccepted;
 
     public PojoGroup() {
     }
 
-    public PojoGroup(Long id, String name, Long ownerId, Boolean privacy, String description, String picture, Integer type, Long participants) {
+    public PojoGroup(Long id, String name, Long ownerId, Boolean privacy, String description, String picture, Integer type, Long participants, Boolean isAccepted) {
         this.id = id;
         this.name = name;
         this.ownerId = ownerId;
@@ -24,6 +25,15 @@ public class PojoGroup {
         this.picture = picture;
         this.type = type;
         this.participants = participants;
+        this.isAccepted = isAccepted;
+    }
+
+    public Boolean getAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        isAccepted = accepted;
     }
 
     public PojoGroup(Group group) {
@@ -35,6 +45,7 @@ public class PojoGroup {
         this.picture = group.getPathToThePicture() + "Error";
         this.type = group.getType();
         this.participants = group.getParticipants();
+
     }
 
     public Long getId() {

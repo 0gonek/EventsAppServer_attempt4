@@ -67,9 +67,10 @@ public class GroupsService {
         return false;
     }
 
-    public PojoGroup getPojoGroup(long id){
+    public PojoGroup getPojoGroup(long id, long userId){
         Group group = groupsRep.findById(id);
         PojoGroup pojoGroup = new PojoGroup(group);
+        pojoGroup.setAccepted(groupUserPairsRep.findByUserIdAndGroupId(userId,id) != null);
         return pojoGroup;
     }
 
