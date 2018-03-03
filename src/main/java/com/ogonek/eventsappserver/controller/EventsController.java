@@ -8,7 +8,11 @@ import com.ogonek.eventsappserver.service.OwnerIdPairsService;
 import com.ogonek.eventsappserver.service.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.awt.*;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/events")
@@ -37,7 +41,7 @@ public class EventsController {
     }
 
     @Modifying
-    @RequestMapping(value = "/get_publc", method = RequestMethod.GET)
+    @RequestMapping(value = "/get_public", method = RequestMethod.GET)
     public PojoEvent getEventPublic(@RequestParam("event_id") Long eventId){
         return eventsService.getPojoEventPublic(eventId);
 
