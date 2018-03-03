@@ -85,7 +85,7 @@ public class GroupsController {
 
     @Modifying
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public PojoSmallGroups searchGroups(@RequestParam("id") Long id, @RequestParam("token") String token,
+    public PojoGroupIdNames searchGroups(@RequestParam("id") Long id, @RequestParam("token") String token,
                                        @RequestParam("key_word") String keyWord, @RequestParam("offset") Integer offset,
                                        @RequestParam("quantity") Integer quantity) {
         if(usersService.verifyToken(id, token)) {
