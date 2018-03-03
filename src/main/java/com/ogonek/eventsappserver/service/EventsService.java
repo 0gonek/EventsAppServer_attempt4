@@ -45,7 +45,7 @@ public class EventsService {
         boolean isAccepted = false;
         if(idPairsRep.findByUserIdAndEventId(userId, eventId) != null) isAccepted = true;
         String groupName;
-        if(event.getGroupID() == null)
+        if(event.getGroupID() == null || event.getGroupID() == 0)
             groupName = null;
         else
             groupName = groupsRep.findById(event.getGroupID()).getName();
@@ -62,7 +62,7 @@ public class EventsService {
         if(event.getPrivacy() == true)
             return null;
         String groupName;
-        if(event.getGroupID() == null)
+        if(event.getGroupID() == null || event.getGroupID() == 0)
             groupName = null;
         else
             groupName = groupsRep.findById(event.getGroupID()).getName();

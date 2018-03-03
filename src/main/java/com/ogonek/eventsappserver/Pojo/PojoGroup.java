@@ -42,7 +42,7 @@ public class PojoGroup {
         this.ownerId = group.getOwnerId();
         this.privacy = group.getPrivacy();
         this.description = group.getDescription();
-        this.picture = group.getPathToThePicture() + "Error";
+        this.picture = group.getPathToThePicture();
         this.type = group.getType();
         this.participants = group.getParticipants();
 

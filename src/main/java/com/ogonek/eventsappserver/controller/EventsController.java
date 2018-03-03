@@ -11,9 +11,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/events")
 public class EventsController {
