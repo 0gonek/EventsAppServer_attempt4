@@ -1,34 +1,56 @@
 package com.ogonek.eventsappserver.entity;
 
-import org.springframework.data.jpa.repository.Modifying;
-
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Objects;
 
+/**
+ * Сущность пользователя
+ */
 @Entity
 @Table(name = "users")
 public class User implements Serializable{
 
-    private static final int EVENTSCOUNT = 2;
-
+    /**
+     * Автогенерируемое поле id
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    /**
+     * Имя пользователя
+     */
     @Column(name = "name", nullable = false)
     private String name;
+    /**
+     * Пароль (устарел, ныне не используется)
+     */
     @Column(name = "code", nullable = true)
     private String code;
+    /**
+     * Уникальный идентификатор пользователя
+     */
     @Column(name = "token", nullable = false)
     private String token;
+    /**
+     * Тип интеграции пользователя
+     */
     @Column(name = "integrationType", nullable = false)
     private String integrationType;
+    /**
+     * Integration ID пользователя в соответствующей соцсети
+     */
     @Column(name = "integrationId", nullable = false)
     private String integrationId;
 
-    public User(){}
-
+    /**
+     * Конструктор (устаревший)
+     * @param name имя пользователя
+     * @param code пароль пользователя
+     * @param token уникальный идентификатор пользователя
+     * @param integrationType тип интеграции пользователя
+     * @param integrationId integration ID пользователя в соответствующей соцсети
+     */
     public User(String name, String code, String token, String integrationType, String integrationId) {
         this.name = name;
         this.code = code;
@@ -37,6 +59,13 @@ public class User implements Serializable{
         this.integrationId = integrationId;
     }
 
+    /**
+     * Конструктор
+     * @param name имя пользователя
+     * @param token уникальный идентификатор пользователя
+     * @param integrationType тип интеграции пользователя
+     * @param integrationId integration ID пользователя в соответствующей соцсети
+     */
     public User(String name, String token, String integrationType, String integrationId) {
         this.name = name;
         this.token = token;

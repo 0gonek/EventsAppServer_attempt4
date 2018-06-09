@@ -13,18 +13,26 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * Контроллер для запросов, касающихся пользователей. Все запросы по пути /users
+ */
 @RestController
 @RequestMapping("/users")
 public class UsersController {
 
+    /**
+     * Сервис с пользователями
+     */
     @Autowired
     UsersService usersService;
 
+    /**
+     * Возвращает информацию обо всех пользователях
+     */
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public @ResponseBody
     Iterable<User> getAllUsers(){
-        Iterable<User> list = usersService.getAll();
-        return list;
+        return usersService.getAll();
     }
 
     private long addUser1(String name,  String code,  String token,  String integrationType,  String integrationId ){
@@ -35,6 +43,11 @@ public class UsersController {
         return usersService.addUser2(name, token, integrationType, integrationId);
     }
 
+    /**
+     * Возвращает имя пользователя
+     * @param id айди пользователя
+     * @param token уникальный ключ пользователя
+     */
     @RequestMapping(value = "/get_name", method = RequestMethod.GET)
     public String getUserName(@RequestParam("id") Long id, @RequestParam("token") String token){
         if(usersService.verifyToken(id, token))
@@ -42,6 +55,11 @@ public class UsersController {
         return "Not verified";
     }
 
+    /**
+     * Возвращает айди пользователя по известным integration id и integration type
+     * @param integrationid айди пользователя в одной из соцсетей
+     * @param integrationtype тип соцсети
+     */
     @RequestMapping(value = "/get_id", method = RequestMethod.GET)
     public @ResponseBody long findByIntegration(@RequestParam("integration_id") String integrationid, @RequestParam("integration_type") String integrationtype){
         try {
@@ -52,6 +70,11 @@ public class UsersController {
         }
     }
 
+    /**
+     * Возвращает путь в аватарке пользователя
+     * @param id айди пользователя
+     * @param token уникальный ключ пользователя
+     */
     @RequestMapping(value = "/get_avatar", method = RequestMethod.GET)
     public String getAvatar(@RequestParam("id") Long id, @RequestParam("token") String token){
         if(usersService.verifyToken(id, token))
@@ -59,12 +82,22 @@ public class UsersController {
         return null;
     }
 
+    /**
+     * Позволяет изменить уникальный ключ пользователя. Возвращает boolean - успешно ли прошло добавление
+     * @param id айди пользователя
+     * @param newtoken новый уникальный ключ пользователя
+     */
     @Modifying
     @RequestMapping(value = "/change_token?id={id}&new_token={newtoken}", method = RequestMethod.GET)
     public boolean changeUserToken(@PathVariable Long id, @PathVariable String newtoken){
         return usersService.changeUserToken(id, newtoken);
     }
 
+    /**
+     * Позволяет удалить пользователя. Возвращает boolean - успешно ли прошло удаление
+     * @param id айди владельца группы
+     * @param token уникальный ключ владельца группы
+     */
     @Modifying
     @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public boolean deleteUser(@RequestParam("id") Long id, @RequestParam("token") String token){
@@ -73,13 +106,21 @@ public class UsersController {
         return false;
     }
 
+    /**
+     * Возвращает информацию о пользователе, если логин чреез VK прошёл успешно, иначе null
+     * @param integrationid integration id VK
+     * @param token token VK
+     */
     @Modifying
     @RequestMapping(value = "/loginvk", method = RequestMethod.GET)
     public PojoNameAndAvatar loginVK(@RequestParam("integration_id") String integrationid, @RequestParam("token") String token) throws Exception{
-        PojoNameAndAvatar pojoNameAndAvatar = usersService.loginVK(integrationid, token);
-        return pojoNameAndAvatar;
+        return usersService.loginVK(integrationid, token);
     }
 
+    /**
+     * Позволяет изменить имя ключ пользователя. Возвращает boolean - успешно ли прошло добавление
+     * @param pojoUserName новое имя, айди и токен пользователя
+     */
     @Modifying
     @RequestMapping(value = "/change_name", method = RequestMethod.POST)
     public boolean changeUserName(@RequestBody PojoUserName pojoUserName){
@@ -88,6 +129,9 @@ public class UsersController {
         return false;
     }
 
+    /**
+     * Тестовый метод для логина VK
+     */
     @Modifying
     @RequestMapping(value = "/testvk", method = RequestMethod.GET)
     public String testVK() throws Exception{

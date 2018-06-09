@@ -21,44 +21,90 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сервис для пользователей и всего, что с ними связано
+ */
 @Service
 public class UsersService {
 
+    /**
+     * База пользователей
+     */
     @Autowired
     UsersRep usersRep;
+    /**
+     * База мероприятий
+     */
     @Autowired
     EventsRep eventsRep;
+    /**
+     * База пар мероприятие-пользователь
+     */
     @Autowired
     IdPairsRep idPairsRep;
+    /**
+     * База пар мероприятие-владелец
+     */
     @Autowired
     OwnerIdPairsRep ownerIdPairRep;
 
+    /**
+     * Возвращает лист всех пар мероприятие-посетитель
+     */
     public Iterable<User> getAll() {
-        Iterable<User> iterable = usersRep.findAll();
-        return iterable;
+        return usersRep.findAll();
     }
 
+    /**
+     * Добавляет пользователя с паролем (устаревшее)
+     * @param name имя
+     * @param code пароль
+     * @param token уникальный идентификатор
+     * @param integrationType тип интеграции
+     * @param integrationId айди интеграции
+     */
     public long addUser1(String name, String code, String token, String integrationType, String integrationId){
         User user = new User(name, code, token, integrationType, integrationId);
         usersRep.save(user);
         return user.getId();
     }
 
+    /**
+     * Добавляет пользователя в базу
+     * @param name имя
+     * @param token уникальный идентификатор
+     * @param integrationType тип интеграции
+     * @param integrationId айди интеграции
+     */
     public long addUser2(String name, String token, String integrationType, String integrationId){
         User user = new User(name, token, integrationType, integrationId);
         usersRep.save(user);
         return user.getId();
     }
 
+    /**
+     * Удаляет пользователя из базы
+     * @param userId айди пользователя
+     */
     public boolean deleteUser(Long userId){
         usersRep.deleteById(userId);
         return true;
     }
 
+    /**
+     * Возвращает boolean, верный ли у пользователя токен
+     * @param userId айди пользователя
+     * @param token уникальный идентификатор
+     */
     public boolean verifyToken(Long userId, String token){
         return usersRep.findById(userId).verifyToken(token);
     }
 
+    /**
+     * Изменяет имя пользователя, возвращает boolean - успешно ли прошло изменение
+     * @param id айди пользователя
+     * @param newName новое имя
+     */
     public boolean changeUserName(long id, String newName){
         return usersRep.changeUserName(id, newName) == 1;
     }
@@ -67,6 +113,11 @@ public class UsersService {
         return  usersRep.changeUserCode(id, newCode) == 1;
     }
 
+    /**
+     * Изменяет уникальный идентификатор пользователя, возвращает boolean - успешно ли прошло изменение
+     * @param id айди пользователя
+     * @param newToken новый уникальный идентификатор
+     */
     public boolean changeUserToken(long id, String newToken){
         return  usersRep.changeUserToken(id, newToken) == 1;
     }
@@ -79,17 +130,30 @@ public class UsersService {
         return usersRep.changeUserIntegrationId(id, newIntegrationId) == 1;
     }
 
+    /**
+     * Возвращает имя пользователя
+     * @param id айди пользователя
+     */
     public String getUserName(long id){
         return usersRep.findById(id).getName();
     }
 
+    /**
+     * Возвращает айди пользователя по его айди интеграции и её типу
+     * @param integrationId айди интеграции
+     * @param integrationType тип интеграции
+     */
     public long findByIntegration(String integrationId, String integrationType){
         return usersRep.findByIntegrationIdAndIntegrationType(integrationId, integrationType).getId();
     }
 
+    /**
+     * Возвращает путь к картинке с большим аватаром пользователя из VK
+     * @param id айди пользователя
+     */
     public String getBigAvatarVK(long id){
         String url = "https://api.vk.com/method/users.get?user_ids=" + usersRep.findById(id).getIntegrationId()
-                + "&fields=photo_200" + "&v=5.8";
+                + "&fields=photo_200" + "&access_token=e5377f96e5377f96e5377f96b0e5699969ee537e5377f96bf4d32aecf699309c93418f5" + "&v=5.8";
         try {
             URL obj = new URL(url);
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -97,7 +161,7 @@ public class UsersService {
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -116,22 +180,28 @@ public class UsersService {
         }
     }
 
-    public List<String> getSmallAvatarsVK(Long[] id){
-        String url = "https://api.vk.com/method/users.get?user_ids=";
+    /**
+     * Возвращает лист путей к картинкам пользователей с их маленькими аватарками из VK
+     * @param id массив айди пользователей
+     */
+    List<String> getSmallAvatarsVK(Long[] id){
+        StringBuilder url = new StringBuilder("https://api.vk.com/method/users.get?user_ids=");
         int n = id.length;
-        url += usersRep.findById(id[0]).getIntegrationId();
+        url.append(usersRep.findById(id[0]).getIntegrationId());
         for (int i = 1; i < n; i++) {
-            url += "," + usersRep.findById(id[i]).getIntegrationId();
+            url.append(",").append(usersRep.findById(id[i]).getIntegrationId());
         }
-        url += "&fields=photo_50" + "&v=5.8";
+        url.append("&fields=photo_50");
+        url.append("&access_token=e5377f96e5377f96e5377f96b0e5699969ee537e5377f96bf4d32aecf699309c93418f5");
+        url.append("&v=5.8");
         try {
-            URL obj = new URL(url);
+            URL obj = new URL(url.toString());
             HttpURLConnection con = (HttpURLConnection) obj.openConnection();
             con.setRequestMethod("GET");
 
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -140,7 +210,7 @@ public class UsersService {
             Gson gson = new Gson();
             try {
                 UserVkSmallAvatar userVkSmallAvatar = gson.fromJson(response.toString(), UserVkSmallAvatar.class);
-                List<String> avatars = new ArrayList<String>();
+                List<String> avatars = new ArrayList<>();
                 n = userVkSmallAvatar.getResponse().length;
                 ResponseVKSmallAvatar responseVKSmallAvatar[] = userVkSmallAvatar.getResponse();
                 for (int i = 0; i < n; i++) {
@@ -156,6 +226,12 @@ public class UsersService {
         }
     }
 
+    /**
+     * Возвращает имя и ауть к картинке с аватаром из VK пользователя, если айди интеграции и токен были валидными.
+     * Иначе возвращает null.
+     * @param integrationid айди интеграции
+     * @param token цникальный идентификатор
+     */
     public PojoNameAndAvatar loginVK(String integrationid, String token) throws Exception{
         String url = "https://api.vk.com/method/users.get?access_token=" + token + "&v=5.8";
 
@@ -165,13 +241,13 @@ public class UsersService {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuffer response = new StringBuffer();
+        StringBuilder response = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             response.append(inputLine);
         }
         in.close();
 
-        long userId = -1;
+        long userId;
         Gson gson = new Gson();
         try {
             UserVKLogin userVKLogin = gson.fromJson(response.toString(), UserVKLogin.class);

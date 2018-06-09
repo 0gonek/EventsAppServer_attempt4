@@ -14,18 +14,38 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Сервис для пар пользователей и мероприятий, на которые они собираются
+ */
 @Service
 public class IdPairsService {
 
+    /**
+     * База пар мероприятие-пользователь
+     */
     @Autowired
     IdPairsRep idPairsRep;
+    /**
+     * База пользователей
+     */
     @Autowired
     UsersRep usersRep;
+    /**
+     * Сервис с пользователями
+     */
     @Autowired
     UsersService usersService;
+    /**
+     * База с мероприятиями
+     */
     @Autowired
     EventsRep eventsRep;
 
+    /**
+     * Добавляет пару в базу. Возвращает boolean - успешно ли прошло добавление
+     * @param userId айди пользователя
+     * @param eventId айди мероприятия
+     */
     public boolean addPair(long userId, long eventId){
         if(idPairsRep.findByUserIdAndEventId(userId,eventId) == null){
             IdPair idPair = new IdPair(userId, eventId);
@@ -48,6 +68,10 @@ public class IdPairsService {
         }
     }
 
+    /**
+     * Возвращает листо пользователей, собирающихся на данной мероприятие
+     * @param eventId айди мероприятия
+     */
     public PojoUsersList getUsersByEventId(long eventId){
         List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
         if(idPairs.size() == 0) return null;
@@ -94,6 +118,12 @@ public class IdPairsService {
         return pairs;
     }
 
+    /**
+     * Удаляет пару из базы. Возвращает boolean - успешно ли прошло удаление
+     * @param userId айди пользователя
+     * @param eventId айди мероприятия
+     * @param ownerId айди самого пользователя или создателя мероприятия
+     */
     public boolean deleteIdPair(long userId, long eventId, long ownerId){
         if(idPairsRep.findByUserIdAndEventId(userId,eventId) != null){
             if(eventsRep.findById(eventId) == null) return false;
@@ -107,6 +137,10 @@ public class IdPairsService {
         return false;
     }
 
+    /**
+     * Возвращает лист имёт и аватаров учатсников мероприятия
+     * @param eventId айди мероприятия
+     */
     public List<PojoNameAndAvatar> getNamesAndAvatars(long eventId){
         List<IdPair> idPairs = idPairsRep.findAllByEventId(eventId);
         List<PojoNameAndAvatar> pojoNameAndAvatars = new LinkedList<PojoNameAndAvatar>();

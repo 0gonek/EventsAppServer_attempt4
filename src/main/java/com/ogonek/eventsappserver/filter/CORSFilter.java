@@ -6,8 +6,14 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Класс CORS-фильтра, чтобы к серверу могли обращаться сторонние сайты
+ */
 public class CORSFilter extends GenericFilterBean implements Filter {
 
+    /**
+     * Собственно, применить фильтр
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

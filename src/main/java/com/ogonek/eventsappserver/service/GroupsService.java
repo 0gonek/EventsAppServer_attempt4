@@ -12,18 +12,39 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Сервис для групп и всего, что с ними связано
+ */
 @Service
 public class GroupsService {
 
+    /**
+     * База групп
+     */
     @Autowired
     GroupsRep groupsRep;
 
+    /**
+     * База пар группа-пользователь
+     */
     @Autowired
     GroupUserPairsRep groupUserPairsRep;
 
+    /**
+     * Сервис с мероприятиями
+     */
     @Autowired
     EventsService eventsService;
 
+    /**
+     * Добавляет новую группу в базу. Возвращает её айди
+     * @param name название группы
+     * @param ownerId айди создателя
+     * @param privacy приватность
+     * @param description описание
+     * @param picture изображение
+     * @param type тип
+     */
     public Long addGroup(String name, Long ownerId, Boolean privacy, String description, byte[] picture,
                          Integer type){
         String pathToThePicture = "Error";
@@ -34,10 +55,14 @@ public class GroupsService {
         return group.getId();
     }
 
+    /**
+     * Изменяет группу в базе. ВОзвращает boolean - успешно ли прошло изменение
+     * @param pojoChangeGroup группа, которая заменяет группу в базе
+     */
     public boolean ChangeGroup(PojoChangeGroup pojoChangeGroup){
         Group oldGroup = groupsRep.findById(pojoChangeGroup.getId());
-        if(oldGroup == null) return false;
-        if(pojoChangeGroup.getOwnerId() == oldGroup.getOwnerId()){
+        if(oldGroup == null || pojoChangeGroup.getOwnerId() == null) return false;
+        if(pojoChangeGroup.getOwnerId().equals(oldGroup.getOwnerId())){
             groupsRep.changeGroupDescription(oldGroup.getId(), pojoChangeGroup.getDescription());
             groupsRep.changeGroupType(oldGroup.getId(), pojoChangeGroup.getType());
             if(pojoChangeGroup.getPicture() != null){
@@ -54,6 +79,11 @@ public class GroupsService {
         return false;
     }
 
+    /**
+     * Удаляет собственную группу
+     * @param userId айди владельца
+     * @param groupId айди группы
+     */
     public boolean deleteOwnGroup(long userId, long groupId){
         Group group = groupsRep.findById(groupId);
         if(group.getOwnerId() == userId){
@@ -67,6 +97,11 @@ public class GroupsService {
         return false;
     }
 
+    /**
+     * Возвращает PojoGroup, сгенерированную из группы
+     * @param id айди группы
+     * @param userId айди пользователя
+     */
     public PojoGroup getPojoGroup(long id, long userId){
         Group group = groupsRep.findById(id);
         PojoGroup pojoGroup = new PojoGroup(group);
@@ -76,6 +111,12 @@ public class GroupsService {
 
     // CHECK INDEXES
 
+    /**
+     * Возвращает список из нескольких групп, начиная с данного номера, содержащих данную часть названия
+     * @param part часть названия
+     * @param offset номер, начиная с которого формируется лист
+     * @param quantity число групп в листе
+     */
     public PojoGroupIdNames findByName(String part, Integer offset, Integer quantity){
         List<Group> groups = groupsRep.findAllByNameContains(part);
         if(groups.size() == 0) return null;
@@ -87,24 +128,34 @@ public class GroupsService {
         return pojoGroupIdNames;
     }
 
+    /**
+     * Возвращает список всех групп, в которых состоит пользователь, в формате PojoGroupIdNames
+     * @param userId айди пользователя
+     */
     public PojoGroupIdNames getOwn(Long userId){
         List<GroupUserPair> groupIds = groupUserPairsRep.findAllByUserId(userId);
         List<Group> groups = new ArrayList<>();
         for (GroupUserPair pair:groupIds
-             ) {
+                ) {
             groups.add(groupsRep.findById(pair.getGroupId()));
         }
         if(groups.size() == 0) return new PojoGroupIdNames(new PojoGroupIdName[0]);
-        PojoGroupIdNames pojoGroupIdNames = toGroupIdNames(groups);
-        return pojoGroupIdNames;
+        return toGroupIdNames(groups);
     }
 
     // CHECK INDEXES
 
+    /**
+     * Возвращает список из нескольких групп, в которых состоит пользователь, начиная с данного номера,
+     * содержащих данную часть названия
+     * @param part часть названия
+     * @param offset номер, начиная с которого формируется лист
+     * @param quantity число групп в листе
+     */
     public PojoGroupIdNames findSomeOwn(String part, Long userId, Integer offset, Integer quantity){
         List<Group> groups = groupsRep.findAllByNameContains(part);
         for (Group group:groups
-             ) {
+                ) {
             if(groupUserPairsRep.findByUserIdAndGroupId(userId, group.getId()) == null)
                 groups.remove(group);
         }
@@ -119,8 +170,12 @@ public class GroupsService {
 
     //public PojoGroupIdNames getOwn(Long)
 
+    /**
+     * Возвращает объект toSmallGroups, сгенерированный из листа групп
+     * @param groups лист групп
+     */
     private PojoSmallGroups toSmallGroups(List<Group> groups){
-        List<PojoSmallGroup> listOsSmallGroups = new ArrayList<PojoSmallGroup>();
+        List<PojoSmallGroup> listOsSmallGroups = new ArrayList<>();
         for (Group group : groups) {
             listOsSmallGroups.add(new PojoSmallGroup(group));
         }
@@ -129,6 +184,10 @@ public class GroupsService {
         return new PojoSmallGroups(pojoSmallGroups);
     }
 
+    /**
+     * Возвращает объект toGroupIdNames, сгенерированный из листа групп
+     * @param groups лист групп
+     */
     private PojoGroupIdNames toGroupIdNames(List<Group> groups){
         List<PojoGroupIdName> listOfPojoGroupIdName = new ArrayList<PojoGroupIdName>();
         for (Group group : groups) {

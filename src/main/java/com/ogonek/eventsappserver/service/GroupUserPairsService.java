@@ -13,20 +13,41 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Сервис для пар пользователей и групп, в которых они состоят
+ */
 @Service
 public class GroupUserPairsService {
+
+    /**
+     * База групп
+     */
     @Autowired
     GroupsRep groupsRep;
 
+    /**
+     * База пар группа-пользователь
+     */
     @Autowired
     GroupUserPairsRep groupUserPairsRep;
 
+    /**
+     * База пользователей
+     */
     @Autowired
     UsersRep usersRep;
 
+    /**
+     * Сервис с пользователями
+     */
     @Autowired
     UsersService usersService;
 
+    /**
+     * Добалвяет в базу пару пользователь-группа
+     * @param userId айди пользователя
+     * @param groupId айди группы
+     */
     public boolean addGroupUserPair(long userId, long groupId){
         if(groupUserPairsRep.findByUserIdAndGroupId(userId, groupId) == null){
             GroupUserPair groupUserPair = new GroupUserPair(userId, groupId);
@@ -39,6 +60,12 @@ public class GroupUserPairsService {
         return false;
     }
 
+    /**
+     * Удалет пару из базы. Возврашает boolean - успешно ли прошло удаление
+     * @param userId айди пользователя
+     * @param groupId айди группы
+     * @param ownerId айди того, кто хочет произвести удаление (сам пользователь или создатель группы)
+     */
     public boolean deleteIdPair(long userId, long groupId, long ownerId){
         if(groupUserPairsRep.findByUserIdAndGroupId(userId,groupId) != null){
             if(groupsRep.findById(groupId) == null) return false;
@@ -52,6 +79,10 @@ public class GroupUserPairsService {
         return false;
     }
 
+    /**
+     * Возвращает лист участников группы
+     * @param groupId айди группы
+     */
     public PojoUsersList getUsersByGroupId(long groupId) {
         List<GroupUserPair> groupUserPairs = groupUserPairsRep.findAllByGroupId(groupId);
         if(groupUserPairs.size() == 0) return null;

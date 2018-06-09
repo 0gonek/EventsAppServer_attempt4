@@ -16,29 +16,55 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Сервис для мероприятий и всего, что с ними связано
+ */
 @Service
 public class EventsService {
 
+    /**
+     * База мероприятий
+     */
     @Autowired
     EventsRep eventsRep;
 
+    /**
+     * База пар мероприятие-группа
+     */
     @Autowired
     GroupUserPairsRep groupUserPairsRep;
 
+    /**
+     * База пар мероприятие-владелец
+     */
     @Autowired
     OwnerIdPairsRep ownerIdPairsRep;
 
+    /**
+     * База пар мероприятие-участник
+     */
     @Autowired
     IdPairsRep idPairsRep;
 
+    /**
+     * База групп
+     */
     @Autowired
     GroupsRep groupsRep;
 
+    /**
+     * Возвращает список всех мероприятий
+     */
     public Iterable<Event> getAll() {
         Iterable<Event> iterable = eventsRep.findAll();
         return iterable;
     }
 
+    /**
+     * Возвращает PojoEvent, сгенерированный из мероприятия, если оно доступно пользователю
+     * @param eventId айди мероприятия
+     * @param userId айди пользователя
+     */
     public PojoEvent getPojoEvent(Long eventId, Long userId){
         Event event = eventsRep.findById(eventId);
         if(event == null) return null;
@@ -50,16 +76,19 @@ public class EventsService {
         else
             groupName = groupsRep.findById(event.getGroupID()).getName();
 
-        PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), event.getOwnerId(), event.getLatitude(), event.getLongitude(),
+        return new PojoEvent(event.getId(), event.getName(), event.getOwnerId(), event.getLatitude(), event.getLongitude(),
                 event.getDate(), event.getEndTime()-event.getDate(), event.getPrivacy(), event.getDescription(), event.getPathToThePicture(),
                 event.getType(), event.getParticipants(), event.getGroupID(), isAccepted, groupName);
-        return pojoEvent;
     }
 
+    /**
+     * Возвращает PojoEvent, сгенерированный из публичного мероприятия
+     * @param eventId айди мероприятия
+     */
     public PojoEvent getPojoEventPublic(Long eventId){
         Event event = eventsRep.findById(eventId);
         if(event == null) return null;
-        if(event.getPrivacy() == true)
+        if(event.getPrivacy())
             return null;
         String groupName;
         if(event.getGroupID() == null || event.getGroupID() == 0)
@@ -67,12 +96,19 @@ public class EventsService {
         else
             groupName = groupsRep.findById(event.getGroupID()).getName();
 
-        PojoEvent pojoEvent = new PojoEvent(event.getId(), event.getName(), null, null, null,
+        return new PojoEvent(event.getId(), event.getName(), null, null, null,
                 event.getDate(), null, null, null, event.getPathToThePicture(),
                 event.getType(), null, null, null, groupName);
-        return pojoEvent;
     }
 
+    /**
+     * Возвращает список всех доступных пользователю мероприятий между заданными координатами
+     * @param userId айди пользователя
+     * @param minLatitude минимальная широта
+     * @param maxLatitude максимальная широта
+     * @param minLongitude минимальная долгота
+     * @param maxLongitude максимальная долгота
+     */
     public PojoEventsForMap getEventsBetween(Long userId, double minLatitude, double maxLatitude, double minLongitude, double maxLongitude){
         Date date = new Date();
         Long currentTime = date.getTime();
@@ -82,6 +118,10 @@ public class EventsService {
         return toPojoEventsForMap(events);
     }
 
+    /**
+     * Возвращает список всех мероприятий в формате pojoEvents, которые пользователь собирается посетить
+     * @param userId айди пользователя
+     */
     public PojoEvents getBigPresentEvents(long userId){
         List<IdPair> pairs = idPairsRep.findAllByUserId(userId);
         List<Long> eventsId = new ArrayList<>();
@@ -96,6 +136,10 @@ public class EventsService {
         return new PojoEvents(arr);
     }
 
+    /**
+     * Возвращает список всех мероприятий, которыми владеет пользователь, в формате PojoEvents
+     * @param ownerId айди владельца мероприятия
+     */
     public PojoEvents getBigOwnEvents(long ownerId){
         List<OwnerIdPair> pairs = ownerIdPairsRep.findAllByOwnerId(ownerId);
         List<Long> eventsId = new ArrayList<>();
@@ -110,6 +154,10 @@ public class EventsService {
         return new PojoEvents(arr);
     }
 
+    /**
+     * Возвращает список всех мероприятий, которыми владеет пользователь, в формате PojoSmallEvents
+     * @param ownerId айди владельца мероприятия
+     */
     public PojoSmallEvents getOwnEvents(long ownerId){
         List<OwnerIdPair> pairs = ownerIdPairsRep.findAllByOwnerId(ownerId);
         List<Long> eventsId = new ArrayList<>();
@@ -120,6 +168,10 @@ public class EventsService {
         return toSmallEvents(events);
     }
 
+    /**
+     * Возвращает список всех мероприятий в формате PojoSmallEvents, которые пользователь собирается посетить
+     * @param userId айди пользователя
+     */
     public PojoSmallEvents getPresentEvents(long userId){
         List<IdPair> pairs = idPairsRep.findAllByUserId(userId);
         List<Long> eventsId = new ArrayList<>();
@@ -132,6 +184,13 @@ public class EventsService {
 
     // CHECK INDEXES
 
+    /**
+     * Возвращает список из нескольких доступных мероприятий, начиная с данного номера, содержащих данную часть названия
+     * @param part часть названия
+     * @param userId айди пользователя
+     * @param offset номер, начиная с которого формируется лист
+     * @param quantity число мероприятий в листе
+     */
     public PojoSmallEvents findByName(String part, Long userId, Integer offset, Integer quantity){
         List<Event> events = eventsRep.findAllByNameContains(part);
         events = removeOldAndPrivate(events, new Date().getTime(), userId);
@@ -144,6 +203,11 @@ public class EventsService {
         return pojoSmallEvents;
     }
 
+    /**
+     * Удаляет собственное мероприятие
+     * @param userId айди владельца мероприятия
+     * @param eventId айди мероприятия
+     */
     public boolean deleteOwnEvent(long userId, long eventId){
         Event event = eventsRep.findById(eventId);
         if(event.getOwnerId() == userId){
@@ -158,6 +222,20 @@ public class EventsService {
         return false;
     }
 
+    /**
+     * Добавляет новое мероприятие в базу. Возвращает его айди
+     * @param name название мероприятия
+     * @param ownerId айди владельца мероприятия
+     * @param latitude широта мероприятия
+     * @param longitude долгота мероприятия
+     * @param date дата проведения мероприятия
+     * @param type тип мероприятия
+     * @param endTime дата окончания мероприятия
+     * @param privacy приватность мероприятия
+     * @param description описание мероприятия
+     * @param picture картинка мероприятия
+     * @param groupId айди группы мероприятия
+     */
     public long addEvent(String name, Long ownerId, Double latitude, Double longitude, Long date, Integer type,
                          Long endTime, Boolean privacy, String description, byte[] picture, Long groupId){
         String pathToThePicture = "Error";
@@ -173,8 +251,12 @@ public class EventsService {
         return event.getId();
     }
 
+    /**
+     * Возвращает объект PojoEventsForMap, сгенерированный из листа мероприятий
+     * @param events лист мероприятий
+     */
     private PojoEventsForMap toPojoEventsForMap(List<Event> events){
-        List<PojoEventForMap> listOfEventsForMap = new ArrayList<PojoEventForMap>();
+        List<PojoEventForMap> listOfEventsForMap = new ArrayList<>();
         for (Event event : events) {
             listOfEventsForMap.add(new PojoEventForMap(event));
         }
@@ -183,8 +265,12 @@ public class EventsService {
         return new PojoEventsForMap(pojoEventsForMap);
     }
 
+    /**
+     * Возвращает объект PojoSmallEvents, сгенерированный из листа мероприятий
+     * @param events лист мероприятий
+     */
     private PojoSmallEvents toSmallEvents(List<Event> events){
-        List<PojoSmallEvent> listOfSmallEvents = new ArrayList<PojoSmallEvent>();
+        List<PojoSmallEvent> listOfSmallEvents = new ArrayList<>();
         for (Event event : events) {
             listOfSmallEvents.add(new PojoSmallEvent(event));
         }
@@ -193,6 +279,13 @@ public class EventsService {
         return new PojoSmallEvents(pojoSmallEvents);
     }
 
+    /**
+     * Возвращает лист мероприятий с удалёнными старыми и недоступными пользователю мероприятиями,
+     * заодно удаляя старые мероприятия из базы
+     * @param events лист мероприятий
+     * @param currentTime текущее время
+     * @param userId айди пользователя
+     */
     private List<Event> removeOldAndPrivate(List<Event> events, Long currentTime, Long userId){
         List<Long> oldEventIds = new ArrayList<>();
         int n = events.size();
@@ -227,10 +320,14 @@ public class EventsService {
         return events;
     }
 
+    /**
+     * Изменяет мероприятие в базе. ВОзвращает boolean - успешно ли прошло изменение
+     * @param pojoChangeEvent мероприятие, которое заменяет мероприятие в базе
+     */
     public boolean changeEvent(PojoChangeEvent pojoChangeEvent){
         Event oldEvent = eventsRep.findById(pojoChangeEvent.getId());
-        if (oldEvent == null) return false;
-        if(pojoChangeEvent.getOwnerId() == oldEvent.getOwnerId()){
+        if (oldEvent == null || pojoChangeEvent.getOwnerId() == null) return false;
+        if(pojoChangeEvent.getOwnerId().equals(oldEvent.getOwnerId())){
             eventsRep.changeEventDate(oldEvent.getId(), pojoChangeEvent.getDate());
             eventsRep.changeEventEndTime(oldEvent.getId(), oldEvent.getDate() + pojoChangeEvent.getDuration());
             eventsRep.changeEventLatitude(oldEvent.getId(), pojoChangeEvent.getLatitude());
@@ -251,7 +348,12 @@ public class EventsService {
         return false;
     }
 
-    public String savePicture(Long id, byte[] picture){
+    /**
+     * Сохраняет изображение на диск и возвращает путь у нему
+     * @param id айди того, кому принадлежит изображение
+     * @param picture изоражение
+     */
+    String savePicture(Long id, byte[] picture){
         String directory = org.apache.commons.codec.digest.DigestUtils.sha256Hex(id.toString());
         try {
             try (FileOutputStream fos = new FileOutputStream("pictures/" + directory)) {
@@ -265,6 +367,10 @@ public class EventsService {
         }
     }
 
+    /**
+     * Возвращает картинку с диска
+     * @param dirrectory директория на диске
+     */
     public byte[]  getPicture(String dirrectory){
         File imgPath = new File("pictures/" + dirrectory);
         byte[] buffer = new byte[1024];

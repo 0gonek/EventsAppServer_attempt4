@@ -8,15 +8,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * Сервис для пар пользователей и групп, которые они основали
+ */
 @Service
 public class OwnerIdPairsService {
 
+    /**
+     * База пар мероприятие-владелец
+     */
     @Autowired
     OwnerIdPairsRep ownerIdPairsRep;
 
+    /**
+     * База пользователей
+     */
     @Autowired
     UsersRep usersRep;
 
+    /**
+     * Добавляет пару в базу. Возвращает boolean - успешно ли прошло добавление
+     * @param userId айди владельца
+     * @param eventId айди мероприятия
+     */
     public long addOwnerIdPair(long userId, long eventId) {
         OwnerIdPair ownerIdPair = new OwnerIdPair(userId, eventId);
         ownerIdPairsRep.save(ownerIdPair);
@@ -24,8 +38,7 @@ public class OwnerIdPairsService {
     }
 
     public Iterable<OwnerIdPair> getAll(){
-        Iterable<OwnerIdPair> allOwnerIdPairs = ownerIdPairsRep.findAll();
-        return allOwnerIdPairs;
+        return ownerIdPairsRep.findAll();
     }
 
     public OwnerIdPair getById(long iD){
